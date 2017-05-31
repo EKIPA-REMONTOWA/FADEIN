@@ -4,7 +4,7 @@
 	<?php } else { ?>
 		<h1>Zaloguj się.</h1>
 	<?php } ?>
-	
+
 	<?php 
 		echo form_open('login/validate_credentials');
  		echo form_input('username', '', 'placeholder="login"');
