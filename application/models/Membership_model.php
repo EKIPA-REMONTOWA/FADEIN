@@ -56,5 +56,24 @@ class Membership_model extends CI_Model {
 		}
 		
 	}
+	function check_regex($requested_password) {
+		$rules = ['/[A-Z]/','/[a-z]/','/[0-9]/','/[\!\@\#\$\%\^\&\*]/'];
+		foreach ($rules as &$rule) {
+			if(preg_match_all($rule, $requested_password, $matches, PREG_SET_ORDER, 0)) {
+				$rule = true;
+			};
+		}
+		$rule_points_counter = 0;
+		foreach ($rules as $value) {
+			if($value === true) {
+				$rule_points_counter++;
+			} else {
+				return false;
+			}
+		}
+		if($rule_points_counter===4){
+			return true;
+		}
+	}
 }
 ?>

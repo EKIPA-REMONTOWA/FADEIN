@@ -39,12 +39,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $lang['form_validation_required']		= 'The {field} field is required.';
 $lang['form_validation_isset']			= 'The {field} field must have a value.';
-$lang['form_validation_valid_email']		= 'The {field} field must contain a valid email address.';
+$lang['form_validation_valid_email']		= 'Adres e-mail jest niepoprawny.';
 $lang['form_validation_valid_emails']		= 'The {field} field must contain all valid email addresses.';
 $lang['form_validation_valid_url']		= 'The {field} field must contain a valid URL.';
 $lang['form_validation_valid_ip']		= 'The {field} field must contain a valid IP.';
-$lang['form_validation_min_length']		= 'The {field} field must be at least {param} characters in length.';
-$lang['form_validation_max_length']		= 'The {field} field cannot exceed {param} characters in length.';
+$lang['form_validation_min_length']		= 'Pole {field} musi składać się z co najmniej {param} znaków.';
+$lang['form_validation_max_length']		= 'Pole {field} musi składać się z maksymalnie {param} znaków.';
 $lang['form_validation_exact_length']		= 'The {field} field must be exactly {param} characters in length.';
 $lang['form_validation_alpha']			= 'The {field} field may only contain alphabetical characters.';
 $lang['form_validation_alpha_numeric']		= 'The {field} field may only contain alpha-numeric characters.';
@@ -68,3 +68,4 @@ $lang['form_validation_error_message_not_set']	= 'Unable to access an error mess
 $lang['form_validation_in_list']		= 'The {field} field must be one of: {param}.';
 $lang['check_if_username_exists']	= 'Nazwa użytkownika jest już zajęta.';
 $lang['check_if_email_exists']	= 'Adress email już istnieje w bazie danych.';
+$lang['check_regex'] = 'Hasło musi składać się z dużych i małych liter, cyfry i znaku specjalnego.';

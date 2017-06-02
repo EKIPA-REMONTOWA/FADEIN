@@ -33,14 +33,13 @@ class Login extends CI_Controller {
 			$this->index();
 			echo 'Login lub hasło niepoprawne';
 		}
-	}
-	
+	}	
 	function signup() //Kontroler dodawania nowego użytkownika.
 	{
 		$this->load->view('header');
 		$this->load->view('signup_form');
 		$this->load->view('footer');
-	}
+	} 
 	
 	function create_member() //Kontroler tworzenia użytkownika
 	{	//ładowanie biblioteki walidacji formularzy i przeprowadzenie jej z poniższymi zadasami
@@ -50,7 +49,7 @@ class Login extends CI_Controller {
 		$this->form_validation->set_rules('last_name', 'Nazwisko', 'trim|required|min_length[3]|max_length[15]');
 		$this->form_validation->set_rules('email', 'Adres email', 'trim|required|valid_email|max_length[32]|callback_check_if_email_exists');
 		$this->form_validation->set_rules('username', 'Nazwa użytkownika', 'trim|required|min_length[4]|max_length[15]|callback_check_if_username_exists');
-		$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[4]|max_length[32]');
+		$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[8]|max_length[32]|callback_check_regex');
 		$this->form_validation->set_rules('password_confirm', 'Potwierdzenie hasła', 'trim|required|matches[password]');
 		
 		if ($this->form_validation->run() == FALSE) //walidacja spierdolona
@@ -97,6 +96,18 @@ class Login extends CI_Controller {
 			return TRUE;
 		} else {
 			return FALSE;
+		}
+	}
+	//RegulLar expressions check.
+	//Innymi słowy czy w haśle znajduje się np.0-9,Aa-Zz,+znak specjalny
+	//Adnotacja.. jestem zjebany CI ma wbudowaną klasę do regex... kij, koło na nowo jak to mówią xD
+	function check_regex($requested_password) {
+		$this->load->model('membership_model');
+		$chars = $this->membership_model->check_regex($requested_password);
+		if ($chars) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
