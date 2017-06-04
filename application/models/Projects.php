@@ -18,7 +18,8 @@ class Projects extends CI_Model {
         
     }
     
-    /*  Funkcja wyświetla wszystkie stworzone projekty lub jeden konkretny w zależności od parametru
+    /*  
+        Funkcja wyświetla wszystkie stworzone projekty lub jeden konkretny w zależności od parametru
         Aby wyświetlić konkretny projekt oczekuje jednego parametru który będzie stringiem z id projektu
         W przypadku kiedy nie podamy parametru wyświetli wszystkie istniejące projekty
     */
@@ -50,6 +51,22 @@ class Projects extends CI_Model {
         }
     }
     
+    /* 
+        Oczekuje jako parametru stringa z numerem id projektu
+        Zwraca True jeśli istnieje w bazie danych taki projekt
+        Zwraca False jeśli taki projekt nie istnieje 
+    */
+    
+    public function is_project_exist($id){
+        // Przygotuj zapytanie
+            $this->db->select("id_project"); // Wyciągnij wszystko
+            $this->db->from("projects"); // Z tabeli 'projects' 
+            $this->db->where("id_project", $id); //Gdzie kolumna id_project jest taka sama jak podany parametr
+            // Wykonaj zapytanie
+            $query = $this->db->get();
+            // Zwróć tablice z wynikiem
+            return $query->result();
+    }
     
     
     
