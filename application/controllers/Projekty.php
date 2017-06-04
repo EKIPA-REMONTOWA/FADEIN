@@ -49,6 +49,35 @@
             }
         }
         
+        function usun_projekt(){
+            // jeśli użytkownik jst zalogowany
+            if(NULL !== $this->session->is_logged_in){
+                // jeśli użytkownik klikną w "Usuń projekt"
+                if($this->input->post("delate_project")){
+                    // załaduj model odpawiadający za projekty
+                    $this->load->model('projects');
+                    // jeśli udało się usunąć rekord z bazy
+                    if(!$this->projects->delete_project($this->input->post("id_project"))){
+                        // przekieruj do wszystkich projektów
+                        redirect('projekty');
+                    }
+                    // jeśli nie udało się usunąć rekordu z bazy
+                    else{
+                        echo 'coś poszło nie tak! skontaktuj się z administratorem</br><a href="projekty">Powrót</a>';
+                    }
+                        
+                }
+                // jeśli znalazł się tu przypadkowo
+                else{
+                    echo 'coś poszło nie tak! skontaktuj się z administratorem</br><a href="projekty">Powrót</a>';
+                }
+            }
+            // Jeśli użytkownik nie jest zalogowany
+            else{
+                redirect('/login');
+            }
+        }
+        
     }
 
 ?>

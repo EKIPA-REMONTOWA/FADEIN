@@ -68,6 +68,11 @@ class Projects extends CI_Model {
             return $query->result();
     }
     
+    public function delete_project($id){
+        //przygotuj zapytanie
+        $query = 'DELETE FROM projects WHERE id_project ="'."$id".'";';
+        $this->db->query($query);
+    }
     
     
 }
