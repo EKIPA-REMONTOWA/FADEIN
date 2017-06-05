@@ -51,6 +51,9 @@ class Login extends CI_Controller {
 		$this->form_validation->set_rules('username', 'Nazwa użytkownika', 'trim|required|min_length[4]|max_length[15]|callback_check_if_username_exists');
 		$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[8]|max_length[32]|callback_check_regex');
 		$this->form_validation->set_rules('password_confirm', 'Potwierdzenie hasła', 'trim|required|matches[password]');
+		$this->form_validation->set_rules('prof1', 'Profesja1', 'trim|required|callback_check_professions');
+		$this->form_validation->set_rules('prof2', 'Profesja1', 'trim|required|callback_check_professions');
+		$this->form_validation->set_rules('prof3', 'Profesja1', 'trim|required|callback_check_professions');
 		
 		if ($this->form_validation->run() == FALSE) //walidacja spierdolona
 		{
@@ -105,6 +108,16 @@ class Login extends CI_Controller {
 		$this->load->model('membership_model');
 		$chars = $this->membership_model->check_regex($requested_password);
 		if ($chars) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	//Funkcja sprawdzająca poprawność podanych profesji.
+	function check_professions($requested_profession) {
+		$this->load->model('membership_model');
+		$profesja = $this->membership_model->check_professions($requested_profession);
+		if($profesja) {
 			return true;
 		} else {
 			return false;

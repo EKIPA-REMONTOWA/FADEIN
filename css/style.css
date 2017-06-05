@@ -1,1 +1,38 @@
-/*pioterek*/
+#profInput{
+	width: 200px;
+}
+#profHolder{
+	position: relative;
+	width: 265px;
+	display: inline;
+}
+#profHints{
+	position: absolute;
+	top: 26px;
+	left: 0;
+	width: 500px;
+}
+.hint{
+	height: 30px;
+	border-radius: 5px;
+	border: 1px solid #000;
+	line-height: 30px;
+	padding: 0 10px;
+	float: left;
+	margin: 5px;
+	position: relative;
+	background-color: #c0d7fd;
+}
+.hintClose{
+	position: absolute;
+	background-color: #ff7575;
+	border: 1px solid #000;
+	width: 15px;
+	height: 15px;
+	right: -5px;
+	top: -5px;
+	text-align: center;
+	line-height: 12px;
+	border-radius: 2px;
+	cursor: pointer;
+}
