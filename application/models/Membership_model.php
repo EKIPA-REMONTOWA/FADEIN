@@ -20,6 +20,9 @@ class Membership_model extends CI_Model {
 			'first_name' => $this->input->post('first_name'),
 			'last_name' => $this->input->post('last_name'),
 			'email' => $this->input->post('email'),
+			'profesja1' => $this->input->post('prof1'),
+			'profesja2' => $this->input->post('prof2'),
+			'profesja3' => $this->input->post('prof3'),
 			'username' => $this->input->post('username'),
 			'password' => hash('sha512',($this->input->post('password')))
 		);
@@ -53,6 +56,37 @@ class Membership_model extends CI_Model {
 			return FALSE; //login zajęty
 		} else {
 			return TRUE; //login wolny
+		}
+		
+	}
+	//Sprawdzanie czy hasło posiada znak specjalny duże i małe litery oraz cyfry.
+	function check_regex($requested_password) {
+		$rules = ['/[A-Z]/','/[a-z]/','/[0-9]/','/[\!\@\#\$\%\^\&\*]/'];
+		foreach ($rules as &$rule) {
+			if(preg_match_all($rule, $requested_password, $matches, PREG_SET_ORDER, 0)) {
+				$rule = true;
+			};
+		}
+		$rule_points_counter = 0;
+		foreach ($rules as $value) {
+			if($value === true) {
+				$rule_points_counter++;
+			} else {
+				return false;
+			}
+		}
+		if($rule_points_counter===4){
+			return true;
+		}
+	}
+	
+	function check_professions($requested_profession) {
+		$this->db->where('profession', $requested_profession);
+		$result = $this->db->get('professions');
+		if($result->num_rows() == 0) {
+			return false;
+		} else {
+			return true;
 		}
 		
 	}
