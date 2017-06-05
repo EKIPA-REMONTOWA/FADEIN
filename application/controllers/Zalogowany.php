@@ -44,9 +44,16 @@ class Zalogowany extends CI_Controller {
             
             // Jeśli walidacja się nie powiodła lub nie została zainicjowana
             if ($this->form_validation->run() == FALSE){
-                // Załaduj templata jeszcze raaz z ewentualnymi błędami
+                
+                // Ładuj model odpowiedzialny za projekty
+                $this->load->model("projects");
+                
+                // Stwórz zmienną z nazwami kategorii
+                $data = $this->projects->get_categories();
+                
+                // Załaduj templata z danymi o kategoriach
                 $this->load->view('header');
-                $this->load->view('new_project');
+                $this->load->view('new_project',$data);
                 $this->load->view('footer'); 
 		    }
             // Jeśli walidacja się powiaodła
@@ -57,7 +64,8 @@ class Zalogowany extends CI_Controller {
                 'title' => htmlspecialchars($this->input->post('title')), // Tytuł
                 'description' => htmlspecialchars($this->input->post('description')), // Opis
                 'creator' => $this->session->username, // Nazwa twórcy projektu
-                'creation_time' => time() // Czas stworzenia projektu podany w UNIX
+                'creation_time' => time(), // Czas stworzenia projektu podany w UNIX
+                'category' => $this->input->post('category')
             );
             
             // Załaduj model odpowiedzialny za projekty

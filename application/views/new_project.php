@@ -6,6 +6,7 @@
         echo "<br/>";
 		echo form_textarea('description', set_value('description',''), 'placeholder="Opis"');
         echo "<br/>";
+        echo form_dropdown("category",$this->_ci_cached_vars);
     ?>
         <?php echo form_submit('new_project_submit', 'Utwórz projekt');?>
 

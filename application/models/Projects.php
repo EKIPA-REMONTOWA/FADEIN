@@ -74,6 +74,20 @@ class Projects extends CI_Model {
         $this->db->query($query);
     }
     
-    
+    public function get_categories(){
+        // Przygotuj zapytanie
+            $this->db->select("name_category"); // Wyciągnij nazwy projektów
+            $this->db->from("categories"); // Z tabeli 'categories' 
+            // Wykonaj zapytanie
+            $query = $this->db->get();
+            $result = $query->result_array();
+            // Przygotuj uproszczoną tablice z nazwami kategorii
+            $categories = array();
+            // Włóż do zmiennej odpowiednie kategorie wyciągnięte z bazy danych
+            for($i=0; $i<count($result); $i++){
+               $categories[$result[$i]["name_category"]] = $result[$i]["name_category"];
+            }
+            return $categories;
+    }
 }
 ?>

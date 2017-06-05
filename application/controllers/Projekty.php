@@ -14,6 +14,7 @@
                     // Przypisz dane wszystkich projektów do zmiennej która zostanie wysłana do widoku
                     $data = $this->projects->get_projects_by_id();
                     // Załaduj widok z danymi
+                
                     $this->load->view('all_projects', $data);
             }
             // Jeśli użytkownik nie jest zalogowany
