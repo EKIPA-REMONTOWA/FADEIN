@@ -79,7 +79,7 @@ class Membership_model extends CI_Model {
 			return true;
 		}
 	}
-	
+
 	function check_professions($requested_profession) {
 		$this->db->where('profession', $requested_profession);
 		$result = $this->db->get('professions');
@@ -88,7 +88,6 @@ class Membership_model extends CI_Model {
 		} else {
 			return true;
 		}
-		
 	}
 }
 ?>
