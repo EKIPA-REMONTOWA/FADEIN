@@ -1,6 +1,7 @@
 <?php
 
 class Login extends CI_Controller {
+	public $profLicznik = 0;
 	
 	function index()
 	{
@@ -51,9 +52,9 @@ class Login extends CI_Controller {
 		$this->form_validation->set_rules('username', 'Nazwa użytkownika', 'trim|required|min_length[4]|max_length[15]|callback_check_if_username_exists');
 		$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[8]|max_length[32]|callback_check_regex');
 		$this->form_validation->set_rules('password_confirm', 'Potwierdzenie hasła', 'trim|required|matches[password]');
-		$this->form_validation->set_rules('prof1', 'Profesja1', 'trim|required|callback_check_professions');
-		$this->form_validation->set_rules('prof2', 'Profesja1', 'trim|required|callback_check_professions');
-		$this->form_validation->set_rules('prof3', 'Profesja1', 'trim|required|callback_check_professions');
+		$this->form_validation->set_rules('prof1', 'Profesja1', 'trim|callback_check_professions');
+		$this->form_validation->set_rules('prof2', 'Profesja2', 'trim|callback_check_professions');
+		$this->form_validation->set_rules('prof3', 'Profesja3', 'trim|callback_check_professions|callback_check_licznik');
 		
 		if ($this->form_validation->run() == FALSE) //walidacja spierdolona
 		{
@@ -115,12 +116,24 @@ class Login extends CI_Controller {
 	}
 	//Funkcja sprawdzająca poprawność podanych profesji.
 	function check_professions($requested_profession) {
-		$this->load->model('membership_model');
-		$profesja = $this->membership_model->check_professions($requested_profession);
-		if($profesja) {
+		if(strlen($requested_profession) < 1) {
 			return true;
 		} else {
+			$this->load->model('membership_model');
+			$profesja = $this->membership_model->check_professions($requested_profession);
+			if($profesja) {
+				$this->profLicznik++;
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+	function check_licznik() {
+		if ($this->profLicznik == 0) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 }

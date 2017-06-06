@@ -70,3 +70,4 @@ $lang['check_if_username_exists']	= 'Nazwa użytkownika jest już zajęta.';
 $lang['check_if_email_exists']	= 'Adress email już istnieje w bazie danych.';
 $lang['check_regex'] = 'Hasło musi składać się z dużych i małych liter, cyfry i znaku specjalnego.';
 $lang['check_professions'] = 'Podaj prawidłowe profesje z listy!';
+$lang['check_licznik'] = 'Podaj conajmniej jedną profesję';
