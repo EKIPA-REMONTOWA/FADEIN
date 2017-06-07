@@ -34,11 +34,16 @@ class Zalogowany extends CI_Controller {
             
             // Załaduj odpowiednie helpery
             $this->load->helper(array('form', 'url'));
+        
+            // Konfiguruj opcje uploadu
+            $config['upload_path'] = './uploads/';
+            $config['allowed_types'] = 'pdf';
+            $config['max_size']    = 0;
+            $config['file_name'] = time();
+            $this->load->library('upload', $config);
             
-            //Załaduj odpowiednie metody
+            //Konfiguruj opcje validacji
             $this->load->library('form_validation');
-                
-            // Ustaw wymagania walidacji formularza nowego projektu
             $this->form_validation->set_rules('title','Tytuł','trim|required');
             $this->form_validation->set_rules('description','Opis','trim|required');
             
@@ -58,20 +63,25 @@ class Zalogowany extends CI_Controller {
 		    }
             // Jeśli walidacja się powiaodła
             else{
-            
+                
+                // przygotuj info o uploadowanym scenariuszu
+                $upload_data = $this->upload->data(); 
+                $file_name = $upload_data['file_name'];
+                
             // przygotuj dane do wprowadzenia do bazy danych
             $project_form_data = array(
                 'title' => htmlspecialchars($this->input->post('title')), // Tytuł
                 'description' => htmlspecialchars($this->input->post('description')), // Opis
                 'creator' => $this->session->username, // Nazwa twórcy projektu
                 'creation_time' => time(), // Czas stworzenia projektu podany w UNIX
-                'category' => $this->input->post('category')
+                'category' => $this->input->post('category'),
+                'scenario_dir' => "./uploads/".$file_name.".pdf"
             );
             
             // Załaduj model odpowiedzialny za projekty
             $this->load->model('projects');
             // Jeśli udało się wprowadzić dane do bazy danych
-            if($this->projects->insert_project($project_form_data)){
+            if($this->projects->insert_project($project_form_data) and $this->upload->do_upload("scenario")){
                 //Przenieś do powiadomienia o sukcesie
                 // Stworzyłem nowy kontroler aby po odświerzeniu projekt się nie duplikował
                 redirect('nowy_projekt');
