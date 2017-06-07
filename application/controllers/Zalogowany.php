@@ -64,26 +64,25 @@ class Zalogowany extends CI_Controller {
             // Jeśli walidacja się powiaodła
             else{
                 
-                // przygotuj info o uploadowanym scenariuszu
+                // Przygotuj info o uploadowanym scenariuszu
                 $upload_data = $this->upload->data(); 
                 $file_name = $upload_data['file_name'];
                 
-            // przygotuj dane do wprowadzenia do bazy danych
+            // przygotuj dane projektu do wprowadzenia do bazy danych
             $project_form_data = array(
                 'title' => htmlspecialchars($this->input->post('title')), // Tytuł
                 'description' => htmlspecialchars($this->input->post('description')), // Opis
                 'creator' => $this->session->username, // Nazwa twórcy projektu
                 'creation_time' => time(), // Czas stworzenia projektu podany w UNIX
-                'category' => $this->input->post('category'),
-                'scenario_dir' => "./uploads/".$file_name.".pdf"
+                'category' => $this->input->post('category'), // Kategoria
+                'scenario_dir' => "./uploads/".$file_name.".pdf" // Ścieżka dostępu  scenariusza
             );
             
             // Załaduj model odpowiedzialny za projekty
             $this->load->model('projects');
-            // Jeśli udało się wprowadzić dane do bazy danych
+            // Jeśli udało się wprowadzić dane do bazy danych i zuploadować scenariusz
             if($this->projects->insert_project($project_form_data) and $this->upload->do_upload("scenario")){
                 //Przenieś do powiadomienia o sukcesie
-                // Stworzyłem nowy kontroler aby po odświerzeniu projekt się nie duplikował
                 redirect('nowy_projekt');
             }
             // Jeśli nie udało się wprowadzić danych do bazy danych
