@@ -12,11 +12,9 @@ class Zalogowany extends CI_Controller {
         // Wyświetl dane o użytkowniku
 		echo 'nazwa użytkownika=  '.$this->session->username;
 		echo '<br>';
-		echo 'zmienna stanu zalogowania=  '.$this->session->is_logged_in;
-        
+		echo 'id zalogowanego użytkownika=  '.$this->session->user_id;
         // Załaduj widok z panelem kontrolnym użytkownika
 		$this->load->view('menu');
-        
 	}
 	
 	function wyloguj()
