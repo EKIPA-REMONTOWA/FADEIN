@@ -41,7 +41,7 @@ class Zalogowany extends CI_Controller {
             $this->load->helper(array('form', 'url'));
         
             // Konfiguruj opcje uploadu
-            $config['upload_path'] = './uploads/';
+            $config['upload_path'] = './uploads/'.$this->session->username;
             $config['allowed_types'] = 'pdf';
             $config['max_size']    = 0;
             $config['file_name'] = time().".pdf";
