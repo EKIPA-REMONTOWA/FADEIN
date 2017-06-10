@@ -17,11 +17,13 @@ class Login extends CI_Controller {
 	{
 		$this->load->model('membership_model');
 		$query = $this->membership_model->validate();
+		$zalogowany_id = $this->membership_model->check_logged_in_user_id($this->input->post('username'));
 		
 		if($query) // Logowanie poprawne
 		{
 			$data = array(
 				'username' => $this->input->post('username'),
+				'user_id' => $zalogowany_id['id_user'],
 				'is_logged_in' => true
 			);
 			$this->session->set_userdata($data);

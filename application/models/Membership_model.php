@@ -11,7 +11,13 @@ class Membership_model extends CI_Model {
 			return true;
 		}
 	}
-	
+	//Funkcja sprawdzająca id zalogowanego użytkownika
+	function check_logged_in_user_id($requested_username) {
+		$this->db->select('id_user');
+		$this->db->where('username', $requested_username);
+		$zapytanie = $this->db->get('users');
+		return $zapytanie->row_array();
+	}
 	function create_member() {
 		//Ładujemy login do zmiennej
 		$username = $this->input->post('username');
