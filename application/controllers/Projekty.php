@@ -1,7 +1,14 @@
 <?php 
 
     class Projekty extends CI_Controller{
-        
+		
+        function __construct(){
+			parent::__construct();
+			if(NULL == $this->session->is_logged_in){
+				redirect('/login');
+			}
+		}
+		
         // Wyświetla wszystkie projekty
         function index($id_projektu = ""){
             
@@ -24,6 +31,18 @@
         }
         // Wyświetla pojedyńczy projekt
         function id_projektu($id_projektu = NULL ){
+			
+			// Jeśli użytkownik chce ściągnąć scenariusz
+			if( NULL !== $this->input->post("get_scenario")){
+				// Załaduj biblioteki odpowiedzialne za ściąganie i za projekty
+				$this->load->helper('download');
+				$this->load->model('projects');
+				// Zapisz nazwe ściąganego pliku w zmiennej
+				$scenario_name = $this->projects->get_scenario_dir($id_projektu);
+				// Wyślij do użytkownika
+				force_download("./uploads/".$scenario_name,NULL);
+			}
+			
             // jeśli nie podano id projektu do wyświetlenia
             if($id_projektu == NULL ){
                 redirect('projekty');
