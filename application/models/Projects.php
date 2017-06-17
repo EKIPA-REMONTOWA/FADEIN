@@ -118,5 +118,25 @@ class Projects extends CI_Model {
 		// Zwróć nazwe pliku ze scenariuszem
 		return $result[0]->scenario_dir;
 	}
+	
+	/*
+		Funkcja zmienia informacje o danym projekcie w bazie danych
+		Oczekuje tablicy z indeksami odpowiadającymi kolumnom w tabeli 'projects'
+		w których znajdją się dane do zmiany
+		W przypadku powodzenia operacji zwraca TRUE a w przypadku porażki zawraca FALSE
+	*/
+	function update_project($data){
+		// W rekordzie o padoanym id
+		$this->db->where('id_project',$data["id_project"]);
+		// Podmień podane dane, jeśli się powiodło
+		if($this->db->update('projects',$data)){
+			return TRUE;
+		}
+		// jeśli się nie powiodło
+		else{
+			return FALSE;
+		}
+		
+	}
 }
 ?>

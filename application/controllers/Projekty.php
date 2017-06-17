@@ -96,7 +96,42 @@
             else{
                 redirect('/login');
             }
+			
         }
+		
+		function edytuj_projekt(){
+			// Jeśli użytkownik wysłał dane do zmiany
+			if(NULL !== $this->input->post("edit_project_submit")){
+				// załaduj model odpowiedzialny za projekty
+				$this->load->model("projects");
+				// przygotuj dane 
+				$data = array(
+					'id_project' => $this->input->post("id_project"), // Id
+					'title' => htmlspecialchars($this->input->post('title')), // Tytuł
+					'description' => htmlspecialchars($this->input->post('description')) // Opis
+				);
+				// Updatuj dane projektu
+				$this->projects->update_project($data);
+				// Przenieś na strone projektu
+				redirect("/projekty/id_projektu/".$data['id_project']);
+				
+			}
+			// Jeśli użytkownik nie przesłał daanych do zmiany ale zadeklarował taką chęć
+			elseif(NULL !== $this->input->post("id_project")){
+				// załaduj model odpowiedzialny za projekty
+				$this->load->model("projects");
+				// Przygotuj dane projektu do wyświetlenia
+				$id = $this->input->post("id_project");
+				$info = $this->projects->get_projects_by_id($id);
+				// Wyświetl formulaż zmiany danych projektu
+				$this->load->view("edit_project", $info);
+			}
+			// Jeśli znalazł się tu przypadkowo
+			else{
+				// przenieś do panelu projektów
+				redirect("/projekty");
+			}
+		}
         
     }
 
