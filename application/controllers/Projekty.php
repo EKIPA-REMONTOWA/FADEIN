@@ -14,8 +14,10 @@
                     // Przypisz dane wszystkich projektów do zmiennej która zostanie wysłana do widoku
                     $data = $this->projects->get_projects_by_id();
                     // Załaduj widok z danymi
-                
+                	$this->load->view('header');
+					$this->load->view('menu');
                     $this->load->view('all_projects', $data);
+					$this->load->view('footer');
             }
             // Jeśli użytkownik nie jest zalogowany
             else{
@@ -42,7 +44,10 @@
                     // Przypisz dane projektu o podanym id do zmiennej która zostanie wysłana do widoku
                     $data = $this->projects->get_projects_by_id("$param");
                     // Załaduj widok z danymi
+					$this->load->view('header');
+					$this->load->view('menu');
                     $this->load->view('separate_project', $data);
+					$this->load->view('footer');
                 }
                 else{
                     echo 'Podany projekt nie istnieje!<br/><a href="/projekty">powrót</a>';

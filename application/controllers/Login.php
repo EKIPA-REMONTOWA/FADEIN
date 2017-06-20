@@ -6,7 +6,7 @@ class Login extends CI_Controller {
 	function index()
 	{
 		if(isset($this->session->is_logged_in)){
-			redirect('zalogowany/panel');
+			redirect('zalogowany');
 		}
 		$this->load->view('header');
 		$this->load->view('login_form');
@@ -27,7 +27,7 @@ class Login extends CI_Controller {
 				'is_logged_in' => true
 			);
 			$this->session->set_userdata($data);
-			redirect('zalogowany/panel');
+			redirect('zalogowany');
 			
 			
 		}
