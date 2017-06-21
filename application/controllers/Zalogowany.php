@@ -1,27 +1,18 @@
 <?php
 
 class Zalogowany extends CI_Controller {
-	
-	function __construct(){
-		parent::__construct();
-		if(NULL == $this->session->is_logged_in){
-			redirect('/login');
-		}
-	}
-	
-	function panel()
+  
+	function index()
 	{
         // Jeśli użytkownik nie jest zalogowany
 		if(!isset($this->session->is_logged_in)){
             // przenieś do formulaża logowania
 			redirect('/login');
 		}
-        // Wyświetl dane o użytkowniku
-		echo 'nazwa użytkownika=  '.$this->session->username;
-		echo '<br>';
-		echo 'id zalogowanego użytkownika=  '.$this->session->user_id;
         // Załaduj widok z panelem kontrolnym użytkownika
+		$this->load->view('header');
 		$this->load->view('menu');
+		$this->load->view('footer');
 	}
 	
 	function wyloguj()
@@ -30,6 +21,26 @@ class Zalogowany extends CI_Controller {
 		$this->session->sess_destroy();
         // Przenieś do fomulaża logowania
 		redirect('/login');
+	}
+	
+	//Przekierowanie do odpowiedzniej kategorii wyszukiwania.
+	function result() {
+		$argument_szukania = $this->input->post('argument_szukania');
+		$kat_szukania = $this->input->post('kategoria_szukania');
+		
+		if($kat_szukania == 0) {
+			redirect(base_url().'rezultat/u/'.$argument_szukania);
+		}
+		else if ($kat_szukania == 1) {
+			redirect(base_url().'rezultat/c/'.$argument_szukania);
+		}
+		else if ($kat_szukania == 2) {
+			redirect(base_url().'rezultat/f/'.$argument_szukania);
+		}
+		else if ($kat_szukania == 3) {
+			redirect(base_url().'rezultat/l/'.$argument_szukania);
+		}
+		
 	}
 	
     function nowy_projekt(){  
@@ -63,6 +74,7 @@ class Zalogowany extends CI_Controller {
                 
                 // Załaduj templata z danymi o kategoriach
                 $this->load->view('header');
+				$this->load->view('menu');
                 $this->load->view('new_project',$data);
                 $this->load->view('footer'); 
 		    }

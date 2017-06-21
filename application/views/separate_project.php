@@ -1,4 +1,4 @@
-<a href="<?php echo base_url()."/projekty"?>">Powrót</a><br/><br/><br/>
+<a href="<?php echo base_url()."projekty"?>">Powrót</a><br/><br/><br/>
 <?php 
 
     for($i=0; $i<count($this->_ci_cached_vars); $i++){
