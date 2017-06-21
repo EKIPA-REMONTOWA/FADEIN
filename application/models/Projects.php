@@ -67,13 +67,24 @@ class Projects extends CI_Model {
             // Zwróć tablice z wynikiem
             return $query->result();
     }
-    
+	
+    /* 
+		Usuwa projekt o podanym id
+		Oczekuje id projektu jako parametr
+		Zwraca TRUE jeśli się udało i FALSE jeśli się nie udało
+	*/
+	
     public function delete_project($id){
         //przygotuj zapytanie
         $query = 'DELETE FROM projects WHERE id_project ="'."$id".'";';
         $this->db->query($query);
     }
     
+	/* 
+		Zwraca wszystkie znajdujące się w bazie danych kategorie projektów w formie tablicy
+		Oczekuje id projektu jako parametr
+	*/
+	
     public function get_categories(){
         // Przygotuj zapytanie
             $this->db->select("name_category"); // Wyciągnij nazwy projektów
@@ -89,5 +100,43 @@ class Projects extends CI_Model {
             }
             return $categories;
     }
+	
+	/* 
+		Zwraca stringa z nazwą pliku scenariusza przypisanego do danego projektu
+		Oczekuje stringa z id projektu
+	*/
+	
+	public function get_scenario_dir($id){
+		
+		// przygotuj zapytanie
+		$this->db->select("scenario_dir"); // Wyciągnij nazwe pliku
+		$this->db->from("projects"); // z tabeli "projects"
+		$this->db->where("id_project", $id); // gdzie id projektu jest równe podanemu id
+		// Wykonaj zapytanie
+		$query = $this->db->get();
+		$result = $query->result();
+		// Zwróć nazwe pliku ze scenariuszem
+		return $result[0]->scenario_dir;
+	}
+	
+	/*
+		Funkcja zmienia informacje o danym projekcie w bazie danych
+		Oczekuje tablicy z indeksami odpowiadającymi kolumnom w tabeli 'projects'
+		w których znajdją się dane do zmiany
+		W przypadku powodzenia operacji zwraca TRUE a w przypadku porażki zawraca FALSE
+	*/
+	function update_project($data){
+		// W rekordzie o padoanym id
+		$this->db->where('id_project',$data["id_project"]);
+		// Podmień podane dane, jeśli się powiodło
+		if($this->db->update('projects',$data)){
+			return TRUE;
+		}
+		// jeśli się nie powiodło
+		else{
+			return FALSE;
+		}
+		
+	}
 }
 ?>

@@ -32,6 +32,8 @@ class Membership_model extends CI_Model {
 			'username' => $this->input->post('username'),
 			'password' => hash('sha512',($this->input->post('password')))
 		);
+		//Tworzymy folder użytkownika
+		mkdir("./uploads/".$new_member_insert_data['username'], 0700);
 		//Wysyłamy do bazy danych!!!
 		$insert = $this->db->insert('users', $new_member_insert_data);
 		//I zwracamy cośmy dostali, jak to mówią kto daje i zabiera ten się w piekle poniewiera xD

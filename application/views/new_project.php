@@ -6,7 +6,8 @@
         echo "<br/>";
 		echo form_textarea('description', set_value('description',''), 'placeholder="Opis"');
         echo "<br/>";
-        echo form_dropdown("category",$this->_ci_cached_vars);
+        echo form_dropdown("category",$this->_ci_cached_vars)."<br/>";
+		echo "Wgraj scenariusz o rozszeżeniu pdf";
         echo form_input(array('type' => 'file','name' => 'scenario'));
     ?>
         <?php echo form_submit('new_project_submit', 'Utwórz projekt');?>
