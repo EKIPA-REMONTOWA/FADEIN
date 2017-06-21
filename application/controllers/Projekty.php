@@ -1,7 +1,14 @@
 <?php 
 
     class Projekty extends CI_Controller{
-        
+		
+        function __construct(){
+			parent::__construct();
+			if(NULL == $this->session->is_logged_in){
+				redirect('/login');
+			}
+		}
+		
         // Wyświetla wszystkie projekty
         function index($id_projektu = ""){
             
@@ -26,6 +33,18 @@
         }
         // Wyświetla pojedyńczy projekt
         function id_projektu($id_projektu = NULL ){
+			
+			// Jeśli użytkownik chce ściągnąć scenariusz
+			if( NULL !== $this->input->post("get_scenario")){
+				// Załaduj biblioteki odpowiedzialne za ściąganie i za projekty
+				$this->load->helper('download');
+				$this->load->model('projects');
+				// Zapisz nazwe ściąganego pliku w zmiennej
+				$scenario_name = $this->projects->get_scenario_dir($id_projektu);
+				// Wyślij do użytkownika
+				force_download("./uploads/".$this->session->username."/".$scenario_name,NULL);
+			}
+			
             // jeśli nie podano id projektu do wyświetlenia
             if($id_projektu == NULL ){
                 redirect('projekty');
@@ -82,7 +101,42 @@
             else{
                 redirect('/login');
             }
+			
         }
+		
+		function edytuj_projekt(){
+			// Jeśli użytkownik wysłał dane do zmiany
+			if(NULL !== $this->input->post("edit_project_submit")){
+				// załaduj model odpowiedzialny za projekty
+				$this->load->model("projects");
+				// przygotuj dane 
+				$data = array(
+					'id_project' => $this->input->post("id_project"), // Id
+					'title' => htmlspecialchars($this->input->post('title')), // Tytuł
+					'description' => htmlspecialchars($this->input->post('description')) // Opis
+				);
+				// Updatuj dane projektu
+				$this->projects->update_project($data);
+				// Przenieś na strone projektu
+				redirect("/projekty/id_projektu/".$data['id_project']);
+				
+			}
+			// Jeśli użytkownik nie przesłał daanych do zmiany ale zadeklarował taką chęć
+			elseif(NULL !== $this->input->post("id_project")){
+				// załaduj model odpowiedzialny za projekty
+				$this->load->model("projects");
+				// Przygotuj dane projektu do wyświetlenia
+				$id = $this->input->post("id_project");
+				$info = $this->projects->get_projects_by_id($id);
+				// Wyświetl formulaż zmiany danych projektu
+				$this->load->view("edit_project", $info);
+			}
+			// Jeśli znalazł się tu przypadkowo
+			else{
+				// przenieś do panelu projektów
+				redirect("/projekty");
+			}
+		}
         
     }
 

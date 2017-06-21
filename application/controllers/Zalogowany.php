@@ -1,7 +1,7 @@
 <?php
 
 class Zalogowany extends CI_Controller {
-	
+  
 	function index()
 	{
         // Jeśli użytkownik nie jest zalogowany
@@ -52,10 +52,10 @@ class Zalogowany extends CI_Controller {
             $this->load->helper(array('form', 'url'));
         
             // Konfiguruj opcje uploadu
-            $config['upload_path'] = './uploads/';
+            $config['upload_path'] = './uploads/'.$this->session->username;
             $config['allowed_types'] = 'pdf';
             $config['max_size']    = 0;
-            $config['file_name'] = time();
+            $config['file_name'] = time().".pdf";
             $this->load->library('upload', $config);
             
             //Konfiguruj opcje validacji
@@ -92,7 +92,7 @@ class Zalogowany extends CI_Controller {
                 'creator' => $this->session->username, // Nazwa twórcy projektu
                 'creation_time' => time(), // Czas stworzenia projektu podany w UNIX
                 'category' => $this->input->post('category'), // Kategoria
-                'scenario_dir' => "./uploads/".$file_name.".pdf" // Ścieżka dostępu  scenariusza
+                'scenario_dir' => $file_name // Ścieżka dostępu  scenariusza
             );
             
             // Załaduj model odpowiedzialny za projekty
@@ -104,10 +104,14 @@ class Zalogowany extends CI_Controller {
             }
             // Jeśli nie udało się wprowadzić danych do bazy danych
             else{
+				
+				// Stwórz zmienną z nazwami kategorii
+                $data = $this->projects->get_categories();
+				
                 // Wyświetl problem i wyświetl formulaż nowego projektu
-                echo "Problemy z bazą danych, prosimy o zgłoszenie się do Administratora";
+                echo "Problemy z bazą danych lub podany plik nie jest PDFem, prosimy o zgłoszenie się do Administratora lub wgranie PDFu";
                 $this->load->view('header');
-                $this->load->view('new_project');
+                $this->load->view('new_project',$data);
                 $this->load->view('footer'); 
             }
         }
