@@ -12,26 +12,28 @@
 				return 'Nie znaleziono żadnych wyników.';
 			}
 		}
-		//Funkcja zwracająca użytkowników o nazwie podobnej do szukanej.
+		//Funkcja zwracająca użytkowników o Nicku podobnym do szukanego stringa.
 		function szukaj_username($requested_search_arg) {
 			$this->db->select('*')->like('username', $requested_search_arg);
 			$result = $this->db->get('users');
 			$wynik = $this->sprawdz_zapytanie($result);
 			return $wynik;
 		}
-		
+		//Funkcja zwracająca użytkowników o imieniu podobnym do szukanego stringa.
 		function szukaj_first_name($requested_search_arg) {
 			$this->db->select('*')->like('first_name', $requested_search_arg);
 			$result = $this->db->get('users');
 			$wynik = $this->sprawdz_zapytanie($result);
 			return $wynik;
 		}
+		//Funkcja zwracająca użytkowników o nazwisku podobnym do szukanego stringa.
 		function szukaj_last_name($requested_search_arg) {
 			$this->db->select('*')->like('last_name', $requested_search_arg);
 			$result = $this->db->get('users');
 			$wynik = $this->sprawdz_zapytanie($result);
 			return $wynik;
 		}
+		//Funkcja zwracająca użytkowników posiadającym profesje podobne do szukanego stringa.
 		function szukaj_profession($requested_search_arg) {
 			$this->db->select('*')->like('profesja1', $requested_search_arg);
 			$this->db->or_like('profesja2', $requested_search_arg);
@@ -41,6 +43,7 @@
 			return $wynik;
 		}
 		
+		//Funkcja naprawiająca polskie litery z URL'a.
 		function replace($requested_str) {
 			$kody = array();
 				$kody[0] = '/%C4%85/';

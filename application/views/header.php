@@ -11,7 +11,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="<?php echo base_url();?>jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script src="<?php echo base_url();?>js/signup.js"></script>
+	<script src="<?php echo base_url();?>js/strona_glowna/main.js"></script>
 	<script src="<?php echo base_url();?>bootstrap/js/bootstrap.min.js"></script>
 	<!---------------	PODPIĘCIA	------------------------------------------------------>
 </head>
 <body>
+	<div class="containder-fluid full-view">

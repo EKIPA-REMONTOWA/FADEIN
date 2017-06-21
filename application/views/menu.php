@@ -1,51 +1,49 @@
-<?php
-// Wyświetl dane o użytkowniku
-	echo 'nazwa użytkownika=  '.$this->session->username;
-	echo '<br>';
-	echo 'id zalogowanego użytkownika=  '.$this->session->user_id;
-?>
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<ul class="nav navbar-nav">
 				<li><a href="<?php echo base_url()."zalogowany/nowy_projekt" ?>">Stwórz nowy projekt</a></li>
 				<li><a href="<?php echo base_url()."projekty" ?>">Wszystkie projekty</a></li>
-				<li><a href="<?php echo base_url()."szukaj" ?>">Szukaj użytkownika</a></li>
 				<!------- SZUKAJKA ------------------->
 				<li>
+				<div class="btn-toolbar row-center ">
 <?php
 	$kat_szukania = array('Nazwa użytkownika','Profesja','Imię','Nazwisko');
 	$dropdown_bootstrap_class = array('class' => 'form-control', 'id' => 'sel1');
 	echo form_open('zalogowany/result');
 ?>
-					<div class="input-group">
-						<div class="input-group-btn">
-							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-user"></span></button>
-							<button type="button" class="btn btn-default"><span class="glyphicon glyphicon-facetime-video"></span></button>
+						<div class="btn-group">				
+							<button type="button" class="btn btn-default active" value="1" onClick="Set_search_status(1)" id="search_1" title="Szukanie użytkowników"><span class="glyphicon glyphicon-user"></span></button>
+							<button type="button" class="btn btn-default" value="0" onClick="Set_search_status(2)" id="search_2" title="Szukanie projektów"><span class="glyphicon glyphicon-facetime-video"></span></button>
+						
 						</div>
-						<input type="text" class="form-control" name="argument_szukania">
-						<div class="input-group-btn">
+						<div class="input-group">
+							<input type="text" class="form-control" name="argument_szukania">
+						</div>
+						<div class="input-group"><?php echo form_dropdown('kategoria_szukania', $kat_szukania, '', $dropdown_bootstrap_class);?>						
+						</div>
+						<div class="btn-group">
+							<button type="submit" name="Szukaj" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+						</div>
 <?php
-	echo form_dropdown('kategoria_szukania', $kat_szukania, '', $dropdown_bootstrap_class);
+	echo form_close();
 ?>
-							<button type="submit" name="Szukaj" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-						</div>
 					</div>
+				</li>
+				<!------- SZUKAJKA end---------------->
+				<li>
+					<a href="<?php echo base_url()?>zalogowany/<?php echo $this->session->user_id; ?>" title="Twój profil"><b><?php echo $this->session->username;?></b></a>
+				</li>
+				<li>
+<?php
+	echo form_open('zalogowany/wyloguj');	
+?>
+					<button type="sumbit" class="btn btn-danger navbar-btn">Wyloguj</button>
 <?php
 	echo form_close();
 ?>
 				</li>
-				<!------- SZUKAJKA end---------------->
-				<li>
-				<?php
-					echo form_open('zalogowany/wyloguj');	
-				?>
-					<button type="sumbit" class="btn btn-default navbar-btn">Wyloguj</button>
-				<?php
-					echo form_close();
-				?>
-				</li>
-				</ul>
+			</ul>
 		</div>
 	</div>
 </nav>
