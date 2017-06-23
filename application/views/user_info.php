@@ -5,7 +5,7 @@
 <?php 
 	//jeśli użytkownik wszedł na swój profil
 	if($this->session->username == $this->_ci_cached_vars[0]->username){ ?>
-		<br/><a href= <?php echo base_url()."/zalogowany/zmien_haslo"?> >Zmien Hasło</a>
+		<br/><a href= <?php echo base_url()."zalogowany/zmien_haslo"?> >Zmien Hasło</a>
 <?php } 
 ?>
-<br/><a href="<?php echo base_url()."/zalogowany" ?>" >Powrót</a>
+<br/><a href="<?php echo base_url()."zalogowany" ?>" >Powrót</a>

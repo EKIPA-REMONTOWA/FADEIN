@@ -86,8 +86,9 @@ class Zalogowany extends CI_Controller {
 			
 			$this->load->model('membership_model');
 			
+			
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[8]|max_length[32]');
+			$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[8]|max_length[32]|callback_check_regex');
 			$this->form_validation->set_rules('password_confirm', 'Potwierdzenie hasła', 'trim|required|matches[password]');
 			// jeśli zainicjowano zmiane hasła
 			if(NULL !== $this->input->post("change_submit")){
@@ -120,6 +121,17 @@ class Zalogowany extends CI_Controller {
 		else{
 			redirect('/login');
 		}	
+	}
+
+	
+	function check_regex($requested_password) {
+		$this->load->model('membership_model');
+		$chars = $this->membership_model->check_regex($requested_password);
+		if ($chars) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>
