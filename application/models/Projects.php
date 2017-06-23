@@ -138,5 +138,6 @@ class Projects extends CI_Model {
 		}
 		
 	}
+	
 }
 ?>
