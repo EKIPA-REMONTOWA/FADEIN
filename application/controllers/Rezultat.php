@@ -2,185 +2,57 @@
 //Kontroler rezultatu zapytania wyszukiwarki
 class Rezultat extends CI_Controller {
 	//Zakeżnie od odebranego parametru szukania _remap przekieruje pod wybrany adres...
-	function index($parm, $arg) {
-		$this->load->helper('przygotuj_dane');
-		lolz();
-		echo $parm;
-		echo $arg;
-		/*switch($parm) {
-			//Jeśli szukamy po nazwie użytkownika 'username' =>
-			case 'u':
-				$this->u();
-			break;
-			//Jeśli szukamy po nazwie imieniu 'first_name' =>
-			case 'f':
-				$this->f();
-			break;
-			//Jeśli szukamy po nazwie nazwisku 'last_name' =>
-			case 'l':
-				$this->l();
-			break;
-			//Jeśli szukamy po nazwie profesji 'category' =>
-			case 'c':
-				$this->c();
-			break;
-			//Jeśli szukamy po tytule projektu 'title' =>
-			case 't':
-				$this->t();
-			break;
-			//Jeśli szukamy danego twórcy 'autor' =>
-			case 'a':
-				$this->a();
-			break;
-			//Jeśli szukamy danego gatunku 'genre' =>
-			case 'g':
-				$this->g();
-			break;
-		}
-		*/
-	}
-	//////////////////////////////////////$this->output->enable_profiler(TRUE);
-	//Funkcja przygotowawcza
-		function przygotuj_dane() {
-		
-		//Pobranie argumentu szukania z URL i obsługa szukania.
-		$argument_szukania_no_repl = $this->uri->segment(3);
-		$this->load->model('search_model');
-		/* 
-			CodeIgniter nie obsługuje natywnie GET'a więc łapiemy poszczególne segmenty URI i przekierowijemy.
-			Uruchomienie funkcji własnej w modelu 'search_model' ma na celu naprawienie błedów w stringach, 
-			występujących w związku z brakiem obsługi polskich znaków diakrytycznych w adresach URL.
-			tj. C582 => ł, C584 => ń itd...
-		*/
-		$argument_szukania = $this->search_model->replace($argument_szukania_no_repl);
-		//Sprawdzenie czy użytkownik podał minimum 3 znaki.
-		if (strlen($argument_szukania) < 3) {
-			$err_message = array(
+	function index($parm = FALSE, $arg = FALSE) {
+		if ($parm != FALSE && $arg !=FALSE) { 
+			if ($parm == 'u' || $parm == 'c' || $parm == 'f' || $parm == 'l' || $parm == 't' || $parm == 'a' || $parm == 'g') {
+				$this->load->model('search_model');
+				$req_replaced_arg = $this->search_model->replace($arg);
+				if(strlen($req_replaced_arg) < 3) {
+					$err_message = array(
 									'message'=>'Podaj conajmniej 3 litery w polu szukania.'
-			);
-			//Wyświetlenie błedu wyszukiwania w ładowanym widoku 'result_item_fail'.
-			$this->load->view('header');
-			$this->load->view('menu');
-			$this->load->view('rezultaty_wyszukiwan/result_item_fail', $err_message);
-			$this->load->view('footer');
-			return false;
-		} else {
-			//Zwrócenie
-			return $argument_szukania;
-		}
-	}
-	
-	//Walidacja i renderowanie danych znalezionych przez wyszukiwarkę.
-	function query_validate($req_query) {
-		//Jeśli zwrócony wynik jest tablicą, to oznacza że wyszukiwanie powiodło się i znaleziono dopasowane rekordy.
-		$this->load->view('header');
-		$this->load->view('menu');
-		if (gettype($req_query) == 'array') {
-			$data = array(
-							'wynik'=>$req_query
-			);
-			$zmiennaSzukania = $this->session->flashdata('zmiennaSzukania');
-			switch($zmiennaSzukania) {
-				case '0':
-					$this->load->view('rezultaty_wyszukiwan/result_item', $data);
+					);
+					$this->load->view('header');
+					$this->load->view('menu');
+					$this->load->view('rezultaty_wyszukiwan/result_item_fail', $err_message);
 					$this->load->view('footer');
-				break;
-				case '1':
-					$this->load->view('rezultaty_wyszukiwan/result_item_proj', $data);
+				}
+				else {
+					$this->load->model('search_model');
+					$query = $this->search_model->szukaj($parm, $req_replaced_arg);
+					if (gettype($query) == 'array') {
+						$this->load->view('header');
+						$this->load->view('menu');
+						if ($parm == 'u' || $parm == 'c' || $parm == 'f' || $parm == 'l') {
+							$data = array(
+								'wynik'=>$query
+							);
+							$this->load->view('rezultaty_wyszukiwan/result_item', $data);
+						}
+						else {
+							$data = array(
+								'wynik'=>$query
+							);
+							$this->load->view('rezultaty_wyszukiwan/result_item_proj', $data);
+						}
 					$this->load->view('footer');
-				break;
+					}
+					else if (gettype($query) == 'string') {
+						$this->load->view('header');
+						$this->load->view('menu');
+						$data_err = array(
+											'message'=>$query
+						);
+						$this->load->view('rezultaty_wyszukiwan/result_item_fail', $data_err);
+						$this->load->view('footer');
+					}
+				}
+			}
+			else {
+				show_error('Podany parametr wyszukiwania jest nieprawidłowy!');
 			}
 		}
-		//Jeśli zapytanie zwróciło string == komunikat o błędzie, to wyświetlamy nic innego jak komunikat o błędzie >-<
-		else if (gettype($req_query) == 'string') {
-			$data_err = array(
-								'message'=>$req_query
-			);
-			$this->load->view('rezultaty_wyszukiwan/result_item_fail', $data_err);
-			$this->load->view('footer');
-		}
-	}
-	
-	//Szukaj nazwy użytkownika.
-	function u() {
-		//Wysyłamy odebranego stringa do funkcji przygotowawczej.
-		$argument_szukania = $this->przygotuj_dane();
-		//Jeśli użytkownik nie wpisał conajmniej 3 znaków zwróć fałsz.
-		if ($argument_szukania == false) {
-			return false;
-		}
 		else {
-			//Załadowanie modelu szukania, i uruchomienie funkcji.
-			$this->load->model('search_model');
-			$query = $this->search_model->szukaj_username($argument_szukania);
-			//Walidacja odebranych danych.
-			$this->query_validate($query);
-		}
-	}
-	function f() {
-		$argument_szukania = $this->przygotuj_dane();
-		if ($argument_szukania == false) {
-			return false;
-		}
-		else {
-			$this->load->model('search_model');
-			$query = $this->search_model->szukaj_first_name($argument_szukania);
-			$this->query_validate($query);
-		}
-	}
-	function l() {
-		$argument_szukania = $this->przygotuj_dane();
-		if ($argument_szukania == false) {
-			return false;
-		}
-		else {
-			$this->load->model('search_model');
-			$query = $this->search_model->szukaj_last_name($argument_szukania);
-			$this->query_validate($query);
-		}
-	}
-	function c() {
-		$argument_szukania = $this->przygotuj_dane();
-		if ($argument_szukania == false) {
-			return false;
-		}
-		else {
-			$this->load->model('search_model');
-			$query = $this->search_model->szukaj_profession($argument_szukania);
-			$this->query_validate($query);
-		}
-	}
-	function t() {
-		$argument_szukania = $this->przygotuj_dane();
-		if ($argument_szukania == false) {
-			return false;
-		}
-		else {
-			$this->load->model('search_model');
-			$query = $this->search_model->szukaj_title($argument_szukania);
-			$this->query_validate($query);
-		}
-	}
-	function a() {
-		$argument_szukania = $this->przygotuj_dane();
-		if ($argument_szukania == false) {
-			return false;
-		}
-		else {
-			$this->load->model('search_model');
-			$query = $this->search_model->szukaj_autor($argument_szukania);
-			$this->query_validate($query);
-		}
-	}
-	function g() {
-		$argument_szukania = $this->przygotuj_dane();
-		if ($argument_szukania == false) {
-			return false;
-		}
-		else {
-			$this->load->model('search_model');
-			$query = $this->search_model->szukaj_genre($argument_szukania);
-			$this->query_validate($query);
+			show_404();
 		}
 	}
 }
