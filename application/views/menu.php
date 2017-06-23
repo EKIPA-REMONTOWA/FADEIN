@@ -38,6 +38,7 @@
 				</li>
 				<!------- SZUKAJKA end---------------->
 				<li>
+
 					<a href="<?php echo base_url()?>zalogowany/poczta" style="padding: 10px;">
 						<span style="font-size:1.6em; margin-top: 2px;" class="glyphicon glyphicon-envelope"></span>
         			</a>
