@@ -12,6 +12,9 @@
 				return 'Nie znaleziono żadnych wyników.';
 			}
 		}
+		/*
+			WYSZUKIWANIE UŻYTKOWNIKÓW
+		*/
 		//Funkcja zwracająca użytkowników o Nicku podobnym do szukanego stringa.
 		function szukaj_username($requested_search_arg) {
 			$this->db->select('*')->like('username', $requested_search_arg);
@@ -39,6 +42,30 @@
 			$this->db->or_like('profesja2', $requested_search_arg);
 			$this->db->or_like('profesja3', $requested_search_arg);
 			$result = $this->db->get('users');
+			$wynik = $this->sprawdz_zapytanie($result);
+			return $wynik;
+		}
+		/*
+			WYSZUKIWANIE PROJEKTÓW
+		*/
+		//Funkcja zwracająca projekty po tytułach.
+		function szukaj_title($requested_search_arg) {
+			$this->db->select('*')->like('title', $requested_search_arg);
+			$result = $this->db->get('projects');
+			$wynik = $this->sprawdz_zapytanie($result);
+			return $wynik;
+		}
+		//Funkcja zwracająca projekty danego twórcy.
+		function szukaj_autor($requested_search_arg) {
+			$this->db->select('*')->like('creator', $requested_search_arg);
+			$result = $this->db->get('projects');
+			$wynik = $this->sprawdz_zapytanie($result);
+			return $wynik;
+		}
+		//Funkcja zwracająca projekty o podanym gatunku.
+		function szukaj_genre($requested_search_arg) {
+			$this->db->select('*')->like('category', $requested_search_arg);
+			$result = $this->db->get('projects');
 			$wynik = $this->sprawdz_zapytanie($result);
 			return $wynik;
 		}

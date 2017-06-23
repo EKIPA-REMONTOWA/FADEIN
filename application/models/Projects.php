@@ -60,7 +60,7 @@ class Projects extends CI_Model {
     public function is_project_exist($id){
         // Przygotuj zapytanie
             $this->db->select("id_project"); // Wyciągnij wszystko
-            $this->db->from("projects"); // Z tabeli 'projects' 
+            $this->db->from("projects"); // Z tabeli 'projects'
             $this->db->where("id_project", $id); //Gdzie kolumna id_project jest taka sama jak podany parametr
             // Wykonaj zapytanie
             $query = $this->db->get();

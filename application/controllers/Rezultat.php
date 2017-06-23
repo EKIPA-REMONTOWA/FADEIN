@@ -2,8 +2,12 @@
 //Kontroler rezultatu zapytania wyszukiwarki
 class Rezultat extends CI_Controller {
 	//Zakeżnie od odebranego parametru szukania _remap przekieruje pod wybrany adres...
-	function _remap($param) {
-		switch($param) {
+	function index($parm, $arg) {
+		$this->load->helper('przygotuj_dane');
+		lolz();
+		echo $parm;
+		echo $arg;
+		/*switch($parm) {
 			//Jeśli szukamy po nazwie użytkownika 'username' =>
 			case 'u':
 				$this->u();
@@ -20,11 +24,25 @@ class Rezultat extends CI_Controller {
 			case 'c':
 				$this->c();
 			break;
+			//Jeśli szukamy po tytule projektu 'title' =>
+			case 't':
+				$this->t();
+			break;
+			//Jeśli szukamy danego twórcy 'autor' =>
+			case 'a':
+				$this->a();
+			break;
+			//Jeśli szukamy danego gatunku 'genre' =>
+			case 'g':
+				$this->g();
+			break;
 		}
+		*/
 	}
-	
+	//////////////////////////////////////$this->output->enable_profiler(TRUE);
 	//Funkcja przygotowawcza
-	function przygotuj_dane() {
+		function przygotuj_dane() {
+		
 		//Pobranie argumentu szukania z URL i obsługa szukania.
 		$argument_szukania_no_repl = $this->uri->segment(3);
 		$this->load->model('search_model');
@@ -41,7 +59,10 @@ class Rezultat extends CI_Controller {
 									'message'=>'Podaj conajmniej 3 litery w polu szukania.'
 			);
 			//Wyświetlenie błedu wyszukiwania w ładowanym widoku 'result_item_fail'.
-			$this->load->view('result_item_fail', $err_message);
+			$this->load->view('header');
+			$this->load->view('menu');
+			$this->load->view('rezultaty_wyszukiwan/result_item_fail', $err_message);
+			$this->load->view('footer');
 			return false;
 		} else {
 			//Zwrócenie
@@ -58,15 +79,24 @@ class Rezultat extends CI_Controller {
 			$data = array(
 							'wynik'=>$req_query
 			);
-			$this->load->view('result_item', $data);
-			$this->load->view('footer');
+			$zmiennaSzukania = $this->session->flashdata('zmiennaSzukania');
+			switch($zmiennaSzukania) {
+				case '0':
+					$this->load->view('rezultaty_wyszukiwan/result_item', $data);
+					$this->load->view('footer');
+				break;
+				case '1':
+					$this->load->view('rezultaty_wyszukiwan/result_item_proj', $data);
+					$this->load->view('footer');
+				break;
+			}
 		}
 		//Jeśli zapytanie zwróciło string == komunikat o błędzie, to wyświetlamy nic innego jak komunikat o błędzie >-<
 		else if (gettype($req_query) == 'string') {
 			$data_err = array(
 								'message'=>$req_query
 			);
-			$this->load->view('result_item_fail', $data_err);
+			$this->load->view('rezultaty_wyszukiwan/result_item_fail', $data_err);
 			$this->load->view('footer');
 		}
 	}
@@ -117,6 +147,39 @@ class Rezultat extends CI_Controller {
 		else {
 			$this->load->model('search_model');
 			$query = $this->search_model->szukaj_profession($argument_szukania);
+			$this->query_validate($query);
+		}
+	}
+	function t() {
+		$argument_szukania = $this->przygotuj_dane();
+		if ($argument_szukania == false) {
+			return false;
+		}
+		else {
+			$this->load->model('search_model');
+			$query = $this->search_model->szukaj_title($argument_szukania);
+			$this->query_validate($query);
+		}
+	}
+	function a() {
+		$argument_szukania = $this->przygotuj_dane();
+		if ($argument_szukania == false) {
+			return false;
+		}
+		else {
+			$this->load->model('search_model');
+			$query = $this->search_model->szukaj_autor($argument_szukania);
+			$this->query_validate($query);
+		}
+	}
+	function g() {
+		$argument_szukania = $this->przygotuj_dane();
+		if ($argument_szukania == false) {
+			return false;
+		}
+		else {
+			$this->load->model('search_model');
+			$query = $this->search_model->szukaj_genre($argument_szukania);
 			$this->query_validate($query);
 		}
 	}

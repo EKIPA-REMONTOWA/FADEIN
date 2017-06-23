@@ -12,7 +12,7 @@ class Zalogowany extends CI_Controller {
         // Załaduj widok z panelem kontrolnym użytkownika
 		$this->load->view('header');
 		$this->load->view('menu');
-		$this->load->view('footer');
+		$this->load->view('footer');		
 	}
 	
 	function wyloguj()
@@ -27,20 +27,43 @@ class Zalogowany extends CI_Controller {
 	function result() {
 		$argument_szukania = $this->input->post('argument_szukania');
 		$kat_szukania = $this->input->post('kategoria_szukania');
-		
-		if($kat_szukania == 0) {
-			redirect(base_url().'rezultat/u/'.$argument_szukania);
+		$zmiennaSzukania = $this->input->post('zmiennaSzukania');
+		$this->session->set_flashdata('zmiennaSzukania', $zmiennaSzukania);
+		switch($zmiennaSzukania) {
+			//Jeśli szukamy użytkownika
+			case '0':
+				if($kat_szukania == 0) {
+				redirect(base_url().'rezultat/u/'.$argument_szukania);
+				}
+				else if ($kat_szukania == 1) {
+					redirect(base_url().'rezultat/c/'.$argument_szukania);
+				}
+				else if ($kat_szukania == 2) {
+					redirect(base_url().'rezultat/f/'.$argument_szukania);
+				}
+				else if ($kat_szukania == 3) {
+					redirect(base_url().'rezultat/l/'.$argument_szukania);
+				}
+				else {
+					show_404();
+				}
+			break;
+			//Jeśli szukamy projektu
+			case '1':
+				if($kat_szukania == 0) {
+				redirect(base_url().'rezultat/t/'.$argument_szukania);
+				}
+				else if ($kat_szukania == 1) {
+					redirect(base_url().'rezultat/a/'.$argument_szukania);
+				}
+				else if ($kat_szukania == 2) {
+					redirect(base_url().'rezultat/g/'.$argument_szukania);
+				}
+				else {
+					show_404();
+				}
+			break;
 		}
-		else if ($kat_szukania == 1) {
-			redirect(base_url().'rezultat/c/'.$argument_szukania);
-		}
-		else if ($kat_szukania == 2) {
-			redirect(base_url().'rezultat/f/'.$argument_szukania);
-		}
-		else if ($kat_szukania == 3) {
-			redirect(base_url().'rezultat/l/'.$argument_szukania);
-		}
-		
 	}
 	
     function nowy_projekt(){  
