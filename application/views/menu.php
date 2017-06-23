@@ -44,7 +44,7 @@
         			</a>
 				</li>
 				<li>
-					<a href="<?php echo base_url()?>zalogowany/<?php echo $this->session->user_id; ?>" title="Twój profil"><b><?php echo $this->session->username;?></b></a>
+					<a href="<?php echo base_url()?>zalogowany/panel/<?php echo $this->session->user_id; ?>" title="Twój profil"><b><?php echo $this->session->username;?></b></a>
 				</li>
 				<li>
 <?php
