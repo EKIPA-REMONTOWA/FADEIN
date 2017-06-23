@@ -1,7 +1,7 @@
 <h1>Stwórz nowy projekt</h1>
 <?php echo validation_errors(); ?>
    <?php
-		echo form_open_multipart(base_url()."zalogowany/nowy_projekt");
+		echo form_open_multipart(base_url()."projekty/nowy_projekt");
 		echo form_input('title', set_value('title',''), 'placeholder="Tytuł"');
         echo "<br/>";
 		echo form_textarea('description', set_value('description',''), 'placeholder="Opis"');
