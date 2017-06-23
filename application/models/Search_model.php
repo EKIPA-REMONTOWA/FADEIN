@@ -2,6 +2,44 @@
 	//Model wyszukujący.
 	class Search_model extends CI_Model {
 		
+		
+		
+		function szukaj($parm, $arg) {
+			$czego_szukamy;
+			if($parm == 'u' || $parm == 'f' || $parm == 'l' || $parm == 'c') { 
+				$czego_szukamy = 'users';
+			}
+			else {
+				$czego_szukamy = 'projects';
+			}
+			$parametry = array(
+								'u' => 'username',
+								'f' => 'first_name',
+								'l' => 'last_name',
+								't' => 'title',
+								'a' => 'creator',
+								'g' => 'category',
+								'c' => array('profesja1','profesja2','profesj3')
+			);
+			foreach($parametry as $key => $value) {
+				if ($key == $parm) {
+					$parm = $value;
+				}
+				else if($parm == 'c') {
+					$this->db->select('*')->like('profesja1', $arg);
+					$this->db->or_like('profesja2', $arg);
+					$this->db->or_like('profesja3', $arg);
+					$result = $this->db->get('users');
+					$wynik = $this->sprawdz_zapytanie($result);
+					return $wynik;
+				}
+			}
+			$this->db->select('*')->like($parm, $arg);
+			$result = $this->db->get($czego_szukamy);
+			$wynik = $this->sprawdz_zapytanie($result);
+			return $wynik;
+		}
+		
 		function sprawdz_zapytanie($req_result) {
 			//Jeśli znajdziemy dopasowania w bazie...
 			if ($req_result->num_rows() > 0) {
@@ -12,64 +50,6 @@
 				return 'Nie znaleziono żadnych wyników.';
 			}
 		}
-		/*
-			WYSZUKIWANIE UŻYTKOWNIKÓW
-		*/
-		//Funkcja zwracająca użytkowników o Nicku podobnym do szukanego stringa.
-		function szukaj_username($requested_search_arg) {
-			$this->db->select('*')->like('username', $requested_search_arg);
-			$result = $this->db->get('users');
-			$wynik = $this->sprawdz_zapytanie($result);
-			return $wynik;
-		}
-		//Funkcja zwracająca użytkowników o imieniu podobnym do szukanego stringa.
-		function szukaj_first_name($requested_search_arg) {
-			$this->db->select('*')->like('first_name', $requested_search_arg);
-			$result = $this->db->get('users');
-			$wynik = $this->sprawdz_zapytanie($result);
-			return $wynik;
-		}
-		//Funkcja zwracająca użytkowników o nazwisku podobnym do szukanego stringa.
-		function szukaj_last_name($requested_search_arg) {
-			$this->db->select('*')->like('last_name', $requested_search_arg);
-			$result = $this->db->get('users');
-			$wynik = $this->sprawdz_zapytanie($result);
-			return $wynik;
-		}
-		//Funkcja zwracająca użytkowników posiadającym profesje podobne do szukanego stringa.
-		function szukaj_profession($requested_search_arg) {
-			$this->db->select('*')->like('profesja1', $requested_search_arg);
-			$this->db->or_like('profesja2', $requested_search_arg);
-			$this->db->or_like('profesja3', $requested_search_arg);
-			$result = $this->db->get('users');
-			$wynik = $this->sprawdz_zapytanie($result);
-			return $wynik;
-		}
-		/*
-			WYSZUKIWANIE PROJEKTÓW
-		*/
-		//Funkcja zwracająca projekty po tytułach.
-		function szukaj_title($requested_search_arg) {
-			$this->db->select('*')->like('title', $requested_search_arg);
-			$result = $this->db->get('projects');
-			$wynik = $this->sprawdz_zapytanie($result);
-			return $wynik;
-		}
-		//Funkcja zwracająca projekty danego twórcy.
-		function szukaj_autor($requested_search_arg) {
-			$this->db->select('*')->like('creator', $requested_search_arg);
-			$result = $this->db->get('projects');
-			$wynik = $this->sprawdz_zapytanie($result);
-			return $wynik;
-		}
-		//Funkcja zwracająca projekty o podanym gatunku.
-		function szukaj_genre($requested_search_arg) {
-			$this->db->select('*')->like('category', $requested_search_arg);
-			$result = $this->db->get('projects');
-			$wynik = $this->sprawdz_zapytanie($result);
-			return $wynik;
-		}
-		
 		//Funkcja naprawiająca polskie litery z URL'a.
 		function replace($requested_str) {
 			$kody = array();
