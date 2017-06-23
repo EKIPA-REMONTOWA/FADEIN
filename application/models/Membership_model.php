@@ -97,5 +97,26 @@ class Membership_model extends CI_Model {
 			return true;
 		}
 	}
+	
+	function get_user_info($id){
+		$this->db->select("email, username, first_name, last_name, profesja1, profesja2, profesja3"); // Wyciągnij wszystkie dane
+		$this->db->from("users"); // z tabeli "users"
+		$this->db->where("id_user", $id); // gdzie id usera jest równe podanemu id
+		// Wykonaj zapytanie
+		$query = $this->db->get();
+		// Zwróć wynik
+		return $query->result();
+	}
+	
+	function change_password($id,$data){
+		$this->db->where('id_user', $id); 
+		if($this->db->update('users',$data)){
+			return TRUE;
+		}
+		else{
+			return FALSE;
+		}
+		
+	}
 }
 ?>
