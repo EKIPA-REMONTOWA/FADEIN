@@ -31,7 +31,6 @@
 						<div class="btn-group">
 							<button type="submit" name="Szukaj" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
 						</div>
-						<input type="hidden" name="zmiennaSzukania" id="user_proj" value="0">
 <?php
 	echo form_close();
 ?>
