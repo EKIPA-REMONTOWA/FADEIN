@@ -8,7 +8,7 @@
 			</div>		
 		</div>
 			<ul class="nav navbar-nav">
-				<li><a href="<?php echo base_url()."zalogowany/nowy_projekt" ?>">Stwórz nowy projekt</a></li>
+				<li><a href="<?php echo base_url()."projekty/nowy_projekt" ?>">Stwórz nowy projekt</a></li>
 				<li><a href="<?php echo base_url()."projekty" ?>">Wszystkie projekty</a></li>
 				<!------- SZUKAJKA ------------------->
 				<li>
@@ -37,6 +37,12 @@
 					</div>
 				</li>
 				<!------- SZUKAJKA end---------------->
+				<li>
+
+					<a href="<?php echo base_url()?>zalogowany/poczta" style="padding: 10px;">
+						<span style="font-size:1.6em; margin-top: 2px;" class="glyphicon glyphicon-envelope"></span>
+        			</a>
+				</li>
 				<li>
 					<a href="<?php echo base_url()?>zalogowany/panel/<?php echo $this->session->user_id; ?>" title="Twój profil"><b><?php echo $this->session->username;?></b></a>
 				</li>
