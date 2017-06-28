@@ -39,9 +39,11 @@
 				</li>
 				<!------- SZUKAJKA end---------------->
 				<li>
-
-					<a href="<?php echo base_url()?>zalogowany/poczta" style="padding: 10px;">
-						<span style="font-size:1.6em; margin-top: 2px;" class="glyphicon glyphicon-envelope"></span>
+					<a href="<?php echo base_url()?>poczta" style="padding: 8px;">	
+						<button class="btn btn-primary" type="button">
+						  <span class="glyphicon glyphicon-envelope"></span> 
+							<span class="badge">0</span>
+						</button>
         			</a>
 				</li>
 				<li>

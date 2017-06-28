@@ -36,6 +36,24 @@ class Membership_model extends CI_Model {
 		mkdir("./uploads/".$new_member_insert_data['username'], 0700);
 		//Wysyłamy do bazy danych!!!
 		$insert = $this->db->insert('users', $new_member_insert_data);
+		
+		$this->db->select('id_user');
+		$this->db->where('username', $username);
+		$query = $this->db->get('users')->row_array();
+		$sklejone_zapytanie = 'CREATE TABLE `'.$query['id_user'].'` 
+					(
+						`id_wiadomosci` INT(11) AUTO_INCREMENT PRIMARY KEY ,
+						`send_time` INT(11),
+						`message_from` varchar(15),
+						`message_to` varchar(15),
+						`message_title` TINYTEXT,
+						`message` TEXT
+					)';
+		
+		$db2 = $this->load->database('db2', TRUE);
+		$db2->query($sklejone_zapytanie);
+		
+		
 		//I zwracamy cośmy dostali, jak to mówią kto daje i zabiera ten się w piekle poniewiera xD
 		return $insert;
 	}

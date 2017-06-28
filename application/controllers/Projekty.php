@@ -1,4 +1,8 @@
-<?php 
+<?php
+	if(!defined('BASEPATH'))
+	{
+	exit('No direct script access allowed');
+	}
 
     class Projekty extends CI_Controller{
 		
