@@ -134,22 +134,38 @@ class Zalogowany extends CI_Controller {
 		}
 	}
 	
-	function aktywuj_konto($username,$key){
-		
-		$this->load->model("membership_model");
-		
-		$data = array(
-			"username" => $username,
-			"activation_key" => $key
-		);
-		
-		if ($this->membership_model->activate_account($data)){
-			echo "Sukces";
-		} 
-		else {
-			echo "Porażka";
+	function aktywuj_konto($username=FALSE,$key=FALSE){
+		// Jeśli użytkownik chce aktywować konto za pomocą linka z maila
+		if(NULL == $this->input->post("activate_account")){
+			// załaduj model odpowiedzialny za userów
+			$this->load->model("membership_model");
+			// spakuj dane podane w linku do tablicy
+			$data = array(
+				"username" => $username,
+				"activation_key" => $key
+			);
+			// Jeśli za pomocą danych zawartych w linku aktywacja sięudała
+			if ($this->membership_model->activate_account($data)){
+				// Stwórz dane sesyjne umożliwiające automatyczne logowanie
+				$data = array(
+					'username' => $username,
+					'user_id' => $this->membership_model->check_logged_in_user_id($username)["id_user"],
+					'is_logged_in' => true
+				);
+				$this->session->set_userdata($data);
+				// Przenieś do panelu głównego
+				redirect('zalogowany');
+			} 
+			// Jeśli aktywacja się nie udała
+			else {
+				// załaduj widok pozwalający na ponowne wysłanie linku aktywacyjnego
+				$this->load0>view("account_activation/fail");
+			}
 		}
-		
+		// jeśi chce manualnie wpisać adres email do aktywacji konta
+		else{
+			
+		}
 	}
 }
 ?>

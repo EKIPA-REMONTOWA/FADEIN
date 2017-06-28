@@ -77,9 +77,8 @@ class Login extends CI_Controller {
 			$this->load->model('membership_model');
 			if ($query = $this->membership_model->create_member())
 			{
-				$data['account_created'] = 'Twoje konto zostało utworzone.';
-				
-				$data = array(
+				$data['account_created'] = 'Twoje konto zostało utworzone. Sprawdz podany adres e-mail w celu aktywacji konta.';
+				$email_data = array(
 				
 					'email' => $this->input->post('email'),
 					'username' => $this->input->post('username'),
@@ -87,7 +86,7 @@ class Login extends CI_Controller {
 					
 				);
 				
-				$this->membership_model->send_activation_email($data);
+				$this->membership_model->send_activation_email($email_data);
 				
 				$this->load->view('header');
 				$this->load->view('login_form', $data);
@@ -156,5 +155,6 @@ class Login extends CI_Controller {
 			return true;
 		}
 	}
+	
 }
 ?>
