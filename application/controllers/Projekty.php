@@ -146,11 +146,11 @@
             $this->load->helper(array('form', 'url'));
         
             // Konfiguruj opcje uploadu
-            $config['upload_path'] = './uploads/'.md5($this->session->username);
+            $config['upload_path'] = './uploads/'.$this->session->user_id;
             $config['allowed_types'] = 'pdf';
-            $config['max_size']    = 0;
             $config['file_name'] = time().".pdf";
-            $this->load->library('upload', $config);
+			$this->load->library('upload');
+			$this->upload->initialize($config);
             
             //Konfiguruj opcje validacji
             $this->load->library('form_validation');
@@ -198,11 +198,13 @@
             }
             // Jeśli nie udało się wprowadzić danych do bazy danych
             else{
-				
+				echo $this->upload->display_errors();
 				// Stwórz zmienną z nazwami kategorii
                 $data = $this->projects->get_categories();
 				
                 // Wyświetl problem i wyświetl formulaż nowego projektu
+				echo $config['upload_path']."<br/>";
+				print_r($_FILES)."<br/>";
                 echo "Problemy z bazą danych lub podany plik nie jest PDFem, prosimy o zgłoszenie się do Administratora lub wgranie PDFu";
                 $this->load->view('header');
                 $this->load->view('new_project',$data);

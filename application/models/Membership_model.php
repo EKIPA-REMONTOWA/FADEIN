@@ -50,12 +50,16 @@ class Membership_model extends CI_Model {
 			'active' => 0,
 			'activation_key' => $token
 		);
-		//Tworzymy folder użytkownika
-		mkdir("./uploads/".md5($new_member_insert_data['username']), 0700);
 		//Wysyłamy do bazy danych!!!
 		$insert = $this->db->insert('users', $new_member_insert_data);
 		//I zwracamy cośmy dostali, jak to mówią kto daje i zabiera ten się w piekle poniewiera xD
+		
+		//Tworzymy folder użytkownika
+		mkdir("./uploads/".$this->check_logged_in_user_id($this->input->post('username'))["id_user"], 777);
+		
 		return $insert;
+		
+		
 	}
 	//Funkcja z parametrem wysyłanym do kontrolera.
 	function check_if_username_exists($username) {
