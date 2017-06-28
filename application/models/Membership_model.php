@@ -173,14 +173,38 @@ class Membership_model extends CI_Model {
 	}
 	
 	function activate_account($data){
-		$this->db->where($data);
-		$activate = array("active" => 1);
-		if($this->db->update('users',$activate)){
+		$this->db->select("activation_key");
+		$this->db->from("users");
+		$this->db->where("id_user", $data['id']);
+		
+		$query = $this->db->get();
+		$result = $query->result();
+		
+		$active = array("active" => 1);
+		
+		if($result[0]->activation_key == $data["activation_key"]){
+			$this->db->where('id_user', $data['id']);
+			$this->db->update('users',$active);
 			return TRUE;
 		}
 		else{
 			return FALSE;
 		}
+	}
+	
+	function check_if_email_exist($email){
+		$this->db->select("email");
+		$this->db->from("users");
+		$this->db->where("email", $email);
+		
+		$query = $this->db->get();
+		if($query->num_rows() == 1) {
+			return true;
+		}
+		else{
+			return false;
+		}
+		
 	}
 }
 ?>

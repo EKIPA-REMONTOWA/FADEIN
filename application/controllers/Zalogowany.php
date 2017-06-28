@@ -141,10 +141,10 @@ class Zalogowany extends CI_Controller {
 			$this->load->model("membership_model");
 			// spakuj dane podane w linku do tablicy
 			$data = array(
-				"username" => $username,
+				"id" => $this->membership_model->check_logged_in_user_id($username)["id_user"],
 				"activation_key" => $key
 			);
-			// Jeśli za pomocą danych zawartych w linku aktywacja sięudała
+			// Jeśli za pomocą danych zawartych w linku aktywacja się udała
 			if ($this->membership_model->activate_account($data)){
 				// Stwórz dane sesyjne umożliwiające automatyczne logowanie
 				$data = array(
@@ -159,12 +159,37 @@ class Zalogowany extends CI_Controller {
 			// Jeśli aktywacja się nie udała
 			else {
 				// załaduj widok pozwalający na ponowne wysłanie linku aktywacyjnego
-				$this->load0>view("account_activation/fail");
+				print_r($this->input->post);
+				$this->load->view("account_activation/manual_activation");
 			}
 		}
-		// jeśi chce manualnie wpisać adres email do aktywacji konta
+		// jeśi użytkownik manualnie wpisał adres email aby ponownie wysłać link
 		else{
-			
+			// załaduj model odpowiedzialny za userów
+			$this->load->model("membership_model");
+			// jeśli podany adres email I  istnieje w bazie danych
+			if($this->membership_model->check_if_email_exist($this->input->post("email")) && !$this->membership_model->check_if_username_exists($this->input->post("username"))){
+				// Przygotuj dane do wysłania maila aktywacyjnego
+				$username = $this->input->post("username");
+				$email = $this->input->post("email");
+				$key = $this->membership_model->get_activation_key($username);
+				$data = array(
+					"email" => $email,
+					"username" => $username,
+					"activation_key"=> $key 
+				);
+				// Wyślij maila aktywacyjnego
+				$this->membership_model->send_activation_email($data);
+				// Załaduj powiadomienie o wysłaniu maila
+				$data["mesg"] = "Link aktywacyjny został wysłany na podany adres email!";
+				$this->load->view("account_activation/manual_activation",$data);
+			}
+			// jeśli podany adres email nie istnieje w bazie danych
+			else{
+				// Załaduj powiadomienie o błędej walidacji
+				$data["mesg"] = "Podany email lub Login nie istnieje w bazie danych";
+				$this->load->view("account_activation/manual_activation",$data);
+			}
 		}
 	}
 }
