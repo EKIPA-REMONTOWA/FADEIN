@@ -18,10 +18,26 @@ class Membership_model extends CI_Model {
 		$zapytanie = $this->db->get('users');
 		return $zapytanie->row_array();
 	}
+	
+	function is_user_active($username){
+		$this->db->select("active"); // Wyciągnij dane o aktywacji konta
+		$this->db->from("users"); // z tabeli "users"
+		$this->db->where("username", $username); // gdzie nazwa usera jest równe podanemu w bazie danych
+		// Wykonaj zapytanie
+		$query = $this->db->get();
+		// Zwróć wynik
+		$result =  $query->result();
+		
+		return $result[0]->active;
+	}
+	
 	function create_member() {
 		//Ładujemy login do zmiennej
 		$username = $this->input->post('username');
 		//Klasa nowego użytkownika
+		
+		$token = hash('ripemd160',rand(1000,5000).$this->input->post('email'));
+		
 		$new_member_insert_data = array(
 			'first_name' => $this->input->post('first_name'),
 			'last_name' => $this->input->post('last_name'),
@@ -30,7 +46,9 @@ class Membership_model extends CI_Model {
 			'profesja2' => $this->input->post('prof2'),
 			'profesja3' => $this->input->post('prof3'),
 			'username' => $this->input->post('username'),
-			'password' => hash('sha512',($this->input->post('password')))
+			'password' => hash('sha512',($this->input->post('password'))),
+			'active' => 0,
+			'activation_key' => $token
 		);
 		//Tworzymy folder użytkownika
 		mkdir("./uploads/".md5($new_member_insert_data['username']), 0700);
@@ -116,7 +134,49 @@ class Membership_model extends CI_Model {
 		else{
 			return FALSE;
 		}
+	}
+	/* 
+		Funkcja wysyła maila aktywacyjnego na podany adre email.
+		Oczekuje tablicy asocjacyjnej o podanych indeksach indeksach wraz z odpowiednimi danymi:
+		-email
+		-username
+		-activation_key (powinien być w bazie danych w tabeli users w odpowiedniej kolumnie)
+		w przypadku porażki zwraca FALSE w przypadku sukcesu zwraca TRUE
+	*/
+	function send_activation_email($data){
+		$to = $data["email"];
+		$subject = "Aktywuj swoje konto na Fadein.pl";
+		$activation_link = base_url()."zalogowany/aktywuj_konto/".$data['username']."/".$data['activation_key'];
 		
+		$this->load->library('email');
+		
+		$this->email->from('fadein.pl', 'Fadein Team');
+		$this->email->to($to);
+		$this->email->subject($subject);
+		$this->email->message($activation_link);
+		
+		$this->email->send();
+	}
+	
+	function get_activation_key($username){
+		$this->db->select("activation_key"); // wyciągnij klucz aktywacji
+		$this->db->from("users"); // z tabeli "users"
+		$this->db->where("username", $username); // gdzie nazwa użytkownika usera jest równe podanemu
+		
+		$query = $this->db->get();
+		$result = $query->result();
+		return $result[0]->activation_key;
+	}
+	
+	function activate_account($data){
+		$this->db->where($data);
+		$activate = array("active" => 1);
+		if($this->db->update('users',$activate)){
+			return TRUE;
+		}
+		else{
+			return FALSE;
+		}
 	}
 }
 ?>

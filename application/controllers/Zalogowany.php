@@ -133,5 +133,23 @@ class Zalogowany extends CI_Controller {
 			return false;
 		}
 	}
+	
+	function aktywuj_konto($username,$key){
+		
+		$this->load->model("membership_model");
+		
+		$data = array(
+			"username" => $username,
+			"activation_key" => $key
+		);
+		
+		if ($this->membership_model->activate_account($data)){
+			echo "Sukces";
+		} 
+		else {
+			echo "Porażka";
+		}
+		
+	}
 }
 ?>

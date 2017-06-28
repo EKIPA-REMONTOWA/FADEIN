@@ -21,13 +21,20 @@ class Login extends CI_Controller {
 		
 		if($query) // Logowanie poprawne
 		{
-			$data = array(
-				'username' => $this->input->post('username'),
-				'user_id' => $zalogowany_id['id_user'],
-				'is_logged_in' => true
-			);
-			$this->session->set_userdata($data);
-			redirect('zalogowany');
+			// konto jest aktwowane
+			if($this->membership_model->is_user_active($this->input->post('username'))){
+				$data = array(
+					'username' => $this->input->post('username'),
+					'user_id' => $zalogowany_id['id_user'],
+					'is_logged_in' => true
+				);
+				$this->session->set_userdata($data);
+				redirect('zalogowany');
+			}
+			// Konto nie jest aktywowane
+			else{
+				echo "Sprawdz swojego maila i aktywuj konto!";
+			}
 			
 			
 		}
@@ -72,9 +79,20 @@ class Login extends CI_Controller {
 			{
 				$data['account_created'] = 'Twoje konto zostało utworzone.';
 				
+				$data = array(
+				
+					'email' => $this->input->post('email'),
+					'username' => $this->input->post('username'),
+					'activation_key' => $this->membership_model->get_activation_key($this->input->post('username'))
+					
+				);
+				
+				$this->membership_model->send_activation_email($data);
+				
 				$this->load->view('header');
 				$this->load->view('login_form', $data);
 				$this->load->view('footer');
+				
 			}
 			else {
 				$this->load->view('header');
