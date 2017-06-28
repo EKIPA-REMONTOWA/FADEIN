@@ -42,7 +42,7 @@
 				// Zapisz nazwe ściąganego pliku w zmiennej
 				$scenario_name = $this->projects->get_scenario_dir($id_projektu);
 				// Wyślij do użytkownika
-				force_download("./uploads/".$this->session->username."/".$scenario_name,NULL);
+				force_download("./uploads/".md5($this->session->username)."/".$scenario_name,NULL);
 			}
 			
             // jeśli nie podano id projektu do wyświetlenia
@@ -146,7 +146,7 @@
             $this->load->helper(array('form', 'url'));
         
             // Konfiguruj opcje uploadu
-            $config['upload_path'] = './uploads/'.$this->session->username;
+            $config['upload_path'] = './uploads/'.md5($this->session->username);
             $config['allowed_types'] = 'pdf';
             $config['max_size']    = 0;
             $config['file_name'] = time().".pdf";
