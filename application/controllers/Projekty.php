@@ -42,7 +42,7 @@
 				// Zapisz nazwe ściąganego pliku w zmiennej
 				$scenario_name = $this->projects->get_scenario_dir($id_projektu);
 				// Wyślij do użytkownika
-				force_download("./uploads/".md5($this->session->username)."/".$scenario_name,NULL);
+				force_download("./uploads/".$this->session->user_id."/".$scenario_name,NULL);
 			}
 			
             // jeśli nie podano id projektu do wyświetlenia
