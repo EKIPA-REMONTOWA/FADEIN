@@ -13,7 +13,7 @@ class Nowy_projekt extends CI_Controller {
         
         $this->load->view('header');
 		$this->load->view('menu');
-        $this->load->view('new_projects_succes');
+        $this->load->view('projects/new_projects_succes');
         $this->load->view('footer');
     }
 }

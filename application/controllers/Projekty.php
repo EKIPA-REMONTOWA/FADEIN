@@ -23,7 +23,7 @@
                     // Załaduj widok z danymi
                 	$this->load->view('header');
 					$this->load->view('menu');
-                    $this->load->view('all_projects', $data);
+                    $this->load->view('projects/all_projects', $data);
 					$this->load->view('footer');
             }
             // Jeśli użytkownik nie jest zalogowany
@@ -65,7 +65,7 @@
                     // Załaduj widok z danymi
 					$this->load->view('header');
 					$this->load->view('menu');
-                    $this->load->view('separate_project', $data);
+                    $this->load->view('projects/separate_project', $data);
 					$this->load->view('footer');
                 }
                 else{
@@ -129,7 +129,7 @@
 				$id = $this->input->post("id_project");
 				$info = $this->projects->get_projects_by_id($id);
 				// Wyświetl formulaż zmiany danych projektu
-				$this->load->view("edit_project", $info);
+				$this->load->view("projects/edit_project", $info);
 			}
 			// Jeśli znalazł się tu przypadkowo
 			else{
@@ -169,7 +169,7 @@
                 // Załaduj templata z danymi o kategoriach
                 $this->load->view('header');
 				$this->load->view('menu');
-                $this->load->view('new_project',$data);
+                $this->load->view('projects/new_project',$data);
                 $this->load->view('footer'); 
 		    }
             // Jeśli walidacja się powiaodła
@@ -207,7 +207,7 @@
 				print_r($_FILES)."<br/>";
                 echo "Problemy z bazą danych lub podany plik nie jest PDFem, prosimy o zgłoszenie się do Administratora lub wgranie PDFu";
                 $this->load->view('header');
-                $this->load->view('new_project',$data);
+                $this->load->view('projects/new_project',$data);
                 $this->load->view('footer'); 
             }
         }

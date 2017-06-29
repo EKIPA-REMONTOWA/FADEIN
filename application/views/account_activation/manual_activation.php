@@ -7,5 +7,6 @@
 	echo form_submit('activate_account', 'Wyślij');
 	echo form_close();
 ?>
+<a href="<?php echo base_url(); ?>">Logowanie</a>
 
 

@@ -157,7 +157,9 @@ class Membership_model extends CI_Model {
 		$this->email->from('fadein.pl', 'Fadein Team');
 		$this->email->to($to);
 		$this->email->subject($subject);
-		$this->email->message($activation_link);
+		$this->email->message(
+			"Link aktywacyjny do konta o loginie: ".$data['username']."\r\n\r\nDziękujemy za zainteresowanie naszą witryną\r\n\r\n".$activation_link
+		);
 		
 		$this->email->send();
 	}

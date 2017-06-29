@@ -72,7 +72,7 @@ class Zalogowany extends CI_Controller {
 			//  wyciągnij dane o userze o podanym id
 			$info = $this->membership_model->get_user_info($id);
 			// załaduj widok z danymi usera
-			$this->load->view("user_info",$info);
+			$this->load->view("user/user_info",$info);
 		}
 		else{
 			redirect('/login');
@@ -86,7 +86,6 @@ class Zalogowany extends CI_Controller {
 			
 			$this->load->model('membership_model');
 			
-			
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[8]|max_length[32]|callback_check_regex');
 			$this->form_validation->set_rules('password_confirm', 'Potwierdzenie hasła', 'trim|required|matches[password]');
@@ -95,7 +94,7 @@ class Zalogowany extends CI_Controller {
 				// jeśli walidacja się nie powiodła
 				if($this->form_validation->run() == FALSE){
 					// załaduj widok z błędem
-					$this->load->view("password_change");
+					$this->load->view("user/password_change");
 				}
 				//jeśli walidacja się powiodła
 				else{
@@ -107,7 +106,7 @@ class Zalogowany extends CI_Controller {
 					}
 					else{
 						$error = "Problemy z bazą danych, Prosimy o kontakt z administratorem<br/>";
-						$this->load->view("password_change",$error);
+						$this->load->view("user/password_change",$error);
 					}
 					
 				}
@@ -115,7 +114,7 @@ class Zalogowany extends CI_Controller {
 			// jeśli nie zainicjowano zmiany hasła
 			else{
 				// wyświetl widok zmiany hasła bez błędów
-				$this->load->view("password_change");
+				$this->load->view("user/password_change");
 			}
 		}
 		else{
