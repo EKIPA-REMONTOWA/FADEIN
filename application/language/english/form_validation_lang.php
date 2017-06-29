@@ -37,8 +37,8 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$lang['form_validation_required']		= 'The {field} field is required.';
-$lang['form_validation_isset']			= 'The {field} field must have a value.';
+$lang['form_validation_required']		= 'Pole {field} jest wymagane.';
+$lang['form_validation_isset']			= 'Pole {field} musi posiadać wartość.';
 $lang['form_validation_valid_email']		= 'Adres e-mail jest niepoprawny.';
 $lang['form_validation_valid_emails']		= 'The {field} field must contain all valid email addresses.';
 $lang['form_validation_valid_url']		= 'The {field} field must contain a valid URL.';
@@ -71,3 +71,4 @@ $lang['check_if_email_exists']	= 'Adress email już istnieje w bazie danych.';
 $lang['check_regex'] = 'Hasło musi składać się z dużych i małych liter, cyfry i znaku specjalnego.';
 $lang['check_professions'] = 'Podaj prawidłowe profesje z listy!';
 $lang['check_licznik'] = 'Podaj conajmniej jedną profesję';
+$lang['check_if_recipient_exists'] = 'Podany adresat nie istnieje';
