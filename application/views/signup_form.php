@@ -27,6 +27,7 @@
 			echo form_input($hidden2);
 			$hidden3 = array('type' => 'hidden', 'name' => 'prof3', 'id' => 'prof3');
 			echo form_input($hidden3);
+			echo form_close();
 		?>
 	<a href="<?php echo base_url()?>">Powrót</a>
 </div>

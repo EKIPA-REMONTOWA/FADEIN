@@ -26,3 +26,19 @@ function Set_search_status(arg) {
 			$(sel1).append(opcja);
 		}
 }
+
+//Funkcja dodawania do znajomych
+function dodajZnajomego(req_id_user) {
+	$.ajax({
+			type: 'POST',
+			url: "/index.php/Poczta/dodaj_znajomego",
+			dataType: 'json',
+			data: {id_user: req_id_user},
+			success: function(res){
+				showSuccessLog(res);
+			}
+	});
+	function showSuccessLog(res) {
+		window.alert(res);
+	}
+}
