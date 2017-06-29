@@ -32,7 +32,7 @@ class Zalogowany extends CI_Controller {
 			//Jeśli szukamy użytkownika
 			case '0':
 				if($kat_szukania == 0) {
-				redirect(base_url().'rezultat/index/u/'.$argument_szukania);
+					redirect(base_url().'rezultat/index/u/'.$argument_szukania);
 				}
 				else if ($kat_szukania == 1) {
 					redirect(base_url().'rezultat/index/c/'.$argument_szukania);
@@ -80,46 +80,80 @@ class Zalogowany extends CI_Controller {
 	}
 	
 	function zmien_haslo(){
-		// jeśli użytkownik jest zalogowany
-		if(NULL !== $this->session->is_logged_in){
-			//ładowanie biblioteki walidacji formularzy i przeprowadzenie jej z poniższymi zadasami
-			
-			$this->load->model('membership_model');
-			
-			$this->load->library('form_validation');
-			$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[8]|max_length[32]|callback_check_regex');
-			$this->form_validation->set_rules('password_confirm', 'Potwierdzenie hasła', 'trim|required|matches[password]');
-			// jeśli zainicjowano zmiane hasła
-			if(NULL !== $this->input->post("change_submit")){
-				// jeśli walidacja się nie powiodła
-				if($this->form_validation->run() == FALSE){
-					// załaduj widok z błędem
-					$this->load->view("user/password_change");
-				}
-				//jeśli walidacja się powiodła
-				else{
-					$this->load->library('encrypt');
-					$data = array ("password" => hash("sha512" ,$this->input->post("password")));
-					// Jeśli zmiana hasła się powiodła
-					if($this->membership_model->change_password($this->session->user_id,$data)){
-						redirect("zalogowany");
-					}
-					else{
-						$error = "Problemy z bazą danych, Prosimy o kontakt z administratorem<br/>";
-						$this->load->view("user/password_change",$error);
-					}
-					
-				}
+		// jeśli użytkownik nie jest zalogowany
+		if(NULL == $this->session->is_logged_in){
+			// przenieś go do widoku logowania
+			redirect('/login');
+		}
+		// Ładuj model odpowiedzialny za userów
+		$this->load->model("membership_model");
+		
+		// Jeśli użytkownik nie wysłał danych z formulaża potwierdzenia starego hasła
+		if(null == $this->input->post("password_validation") and null == $this->input->post("change_password")){
+			$this->load->view("user/old_password");
+		}
+		// Jeśli użytkownk wysłał dane z formulaża potwierdzenia starego hasła
+		else{
+			//skróć nazwy zmiennych
+			$password1 = $this->input->post("password1");
+			$password2 = $this->input->post("password2");
+			// jeśli podane hasła nie są identyczne
+			if($password1 !== $password2 and null == $this->input->post("change_password")){
+				$data["error"] = "Podane hasła nie są identyczne";
+				$this->load->view("user/old_password",$data);
 			}
-			// jeśli nie zainicjowano zmiany hasła
+			// jeśli podane hasła są identyczne ale nie są przypisane do zalogowanego konta
+			elseif(!$this->membership_model->match_password($password1,$this->session->user_id) and null == $this->input->post("change_password")){
+				$data["error"] = "Niepoprawne hasło";
+				$this->load->view("user/old_password",$data);
+			}
+			// jeśli podane hasła spełniają wszystkie kryteria
 			else{
-				// wyświetl widok zmiany hasła bez błędów
-				$this->load->view("user/password_change");
+				//ładuj biblioteki walidacji formularzy i jej zasad
+				$this->load->library('form_validation');
+				$this->form_validation->set_rules('new_password1', 'Nowe hasło', 'trim|required|min_length[8]|max_length[32]|callback_check_regex');
+				$this->form_validation->set_rules('new_password2', 'Potwierdzenie hasła', 'trim|required|matches[new_password1]');
+				
+				// skróć nazwy zmiennych
+				$new_password1 = $this->input->post("new_password1");
+				$new_password2 = $this->input->post("new_password2");
+				// jeśli użytkownik nie wysłał danych z nowymi hasłami dla konta z formulaza
+				if(null == $this->input->post("change_password")){
+					$this->load->view("user/new_password");
+				}
+				// jeśli użytkownik wysłał dane z nowymi hasami dla konta z formulaża ale są one nie zgodne z walidacją
+				else{
+					// jeśli walidacja się nie powiodła
+					if ($this->form_validation->run() == FALSE){
+						$this->load->view('header');
+						$this->load->view('user/new_password');
+						$this->load->view('footer');
+					}
+					// jeśli walidacja się powiodła ale nowe hasło jest tkie samo jak stare
+					elseif($this->membership_model->match_password($new_password1,$this->session->user_id)){
+						$data["error"] = "Nowe hasło nie może być takie samo jak stare!";
+						$this->load->view('header');
+						$this->load->view('user/new_password',$data);
+						$this->load->view('footer');
+					}
+					// jeśli walidacja nowego hasła zakończyła sie pomyślnie!
+					else{
+						$data= array(
+							"id" => $this->session->user_id,
+							"password" => hash('sha512', $new_password1)
+						);
+						if($this->membership_model->change_password($data)){
+							$this->session->set_flashdata("alert", "Twoje hasło zostało zmienione");
+							redirect("zalogowany");
+						}
+						else{
+							$data["error"] = "Problemy z bazą danych, Prosimy o kontakt z administratorem";
+							$this->load->view("user/new_password");
+						}
+					}
+				}
 			}
 		}
-		else{
-			redirect('/login');
-		}	
 	}
 
 	
@@ -158,7 +192,6 @@ class Zalogowany extends CI_Controller {
 			// Jeśli aktywacja się nie udała
 			else {
 				// załaduj widok pozwalający na ponowne wysłanie linku aktywacyjnego
-				print_r($this->input->post);
 				$this->load->view("account_activation/manual_activation");
 			}
 		}

@@ -62,3 +62,4 @@
 		
 	</div>
 </nav>
+<?php if(null !== $this->session->flashdata('alert')){echo '<div class="alert alert-success" style="text-align:center">'.$this->session->flashdata('alert').'</div>';} ?>

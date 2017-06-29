@@ -130,9 +130,10 @@ class Membership_model extends CI_Model {
 		return $query->result();
 	}
 	
-	function change_password($id,$data){
+	function change_password($data){
+		extract($data);
 		$this->db->where('id_user', $id); 
-		if($this->db->update('users',$data)){
+		if($this->db->update('users',array("password" => $password))){
 			return TRUE;
 		}
 		else{
@@ -207,6 +208,22 @@ class Membership_model extends CI_Model {
 			return false;
 		}
 		
+	}
+	function match_password($password,$id){
+		
+		$this->db->select("password");
+		$this->db->from("users");
+		$this->db->where("id_user",$id);
+		
+		$query = $this->db->get();
+		$user_password = $query->result()[0]->password;
+		
+		if($user_password == hash('sha512', $password)){
+			return TRUE;
+		}
+		else{
+			return FALSE;
+		}
 	}
 }
 ?>
