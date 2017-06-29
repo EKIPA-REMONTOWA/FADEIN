@@ -27,7 +27,7 @@
                     // Załaduj widok z danymi
                 	$this->load->view('header');
 					$this->load->view('menu');
-                    $this->load->view('all_projects', $data);
+                    $this->load->view('projects/all_projects', $data);
 					$this->load->view('footer');
             }
             // Jeśli użytkownik nie jest zalogowany
@@ -46,7 +46,7 @@
 				// Zapisz nazwe ściąganego pliku w zmiennej
 				$scenario_name = $this->projects->get_scenario_dir($id_projektu);
 				// Wyślij do użytkownika
-				force_download("./uploads/".$this->session->username."/".$scenario_name,NULL);
+				force_download("./uploads/".$this->session->user_id."/".$scenario_name,NULL);
 			}
 			
             // jeśli nie podano id projektu do wyświetlenia
@@ -69,7 +69,7 @@
                     // Załaduj widok z danymi
 					$this->load->view('header');
 					$this->load->view('menu');
-                    $this->load->view('separate_project', $data);
+                    $this->load->view('projects/separate_project', $data);
 					$this->load->view('footer');
                 }
                 else{
@@ -133,7 +133,7 @@
 				$id = $this->input->post("id_project");
 				$info = $this->projects->get_projects_by_id($id);
 				// Wyświetl formulaż zmiany danych projektu
-				$this->load->view("edit_project", $info);
+				$this->load->view("projects/edit_project", $info);
 			}
 			// Jeśli znalazł się tu przypadkowo
 			else{
@@ -150,11 +150,11 @@
             $this->load->helper(array('form', 'url'));
         
             // Konfiguruj opcje uploadu
-            $config['upload_path'] = './uploads/'.$this->session->username;
+            $config['upload_path'] = './uploads/'.$this->session->user_id;
             $config['allowed_types'] = 'pdf';
-            $config['max_size']    = 0;
             $config['file_name'] = time().".pdf";
-            $this->load->library('upload', $config);
+			$this->load->library('upload');
+			$this->upload->initialize($config);
             
             //Konfiguruj opcje validacji
             $this->load->library('form_validation');
@@ -173,7 +173,7 @@
                 // Załaduj templata z danymi o kategoriach
                 $this->load->view('header');
 				$this->load->view('menu');
-                $this->load->view('new_project',$data);
+                $this->load->view('projects/new_project',$data);
                 $this->load->view('footer'); 
 		    }
             // Jeśli walidacja się powiaodła
@@ -202,14 +202,16 @@
             }
             // Jeśli nie udało się wprowadzić danych do bazy danych
             else{
-				
+				echo $this->upload->display_errors();
 				// Stwórz zmienną z nazwami kategorii
                 $data = $this->projects->get_categories();
 				
                 // Wyświetl problem i wyświetl formulaż nowego projektu
+				echo $config['upload_path']."<br/>";
+				print_r($_FILES)."<br/>";
                 echo "Problemy z bazą danych lub podany plik nie jest PDFem, prosimy o zgłoszenie się do Administratora lub wgranie PDFu";
                 $this->load->view('header');
-                $this->load->view('new_project',$data);
+                $this->load->view('projects/new_project',$data);
                 $this->load->view('footer'); 
             }
         }

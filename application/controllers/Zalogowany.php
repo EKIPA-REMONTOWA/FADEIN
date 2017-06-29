@@ -72,7 +72,7 @@ class Zalogowany extends CI_Controller {
 			//  wyciągnij dane o userze o podanym id
 			$info = $this->membership_model->get_user_info($id);
 			// załaduj widok z danymi usera
-			$this->load->view("user_info",$info);
+			$this->load->view("user/user_info",$info);
 		}
 		else{
 			redirect('/login');
@@ -86,7 +86,6 @@ class Zalogowany extends CI_Controller {
 			
 			$this->load->model('membership_model');
 			
-			
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('password', 'Hasło', 'trim|required|min_length[8]|max_length[32]|callback_check_regex');
 			$this->form_validation->set_rules('password_confirm', 'Potwierdzenie hasła', 'trim|required|matches[password]');
@@ -95,7 +94,7 @@ class Zalogowany extends CI_Controller {
 				// jeśli walidacja się nie powiodła
 				if($this->form_validation->run() == FALSE){
 					// załaduj widok z błędem
-					$this->load->view("password_change");
+					$this->load->view("user/password_change");
 				}
 				//jeśli walidacja się powiodła
 				else{
@@ -107,7 +106,7 @@ class Zalogowany extends CI_Controller {
 					}
 					else{
 						$error = "Problemy z bazą danych, Prosimy o kontakt z administratorem<br/>";
-						$this->load->view("password_change",$error);
+						$this->load->view("user/password_change",$error);
 					}
 					
 				}
@@ -115,7 +114,7 @@ class Zalogowany extends CI_Controller {
 			// jeśli nie zainicjowano zmiany hasła
 			else{
 				// wyświetl widok zmiany hasła bez błędów
-				$this->load->view("password_change");
+				$this->load->view("user/password_change");
 			}
 		}
 		else{
@@ -131,6 +130,65 @@ class Zalogowany extends CI_Controller {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	function aktywuj_konto($username=FALSE,$key=FALSE){
+		// Jeśli użytkownik chce aktywować konto za pomocą linka z maila
+		if(NULL == $this->input->post("activate_account")){
+			// załaduj model odpowiedzialny za userów
+			$this->load->model("membership_model");
+			// spakuj dane podane w linku do tablicy
+			$data = array(
+				"id" => $this->membership_model->check_logged_in_user_id($username)["id_user"],
+				"activation_key" => $key
+			);
+			// Jeśli za pomocą danych zawartych w linku aktywacja się udała
+			if ($this->membership_model->activate_account($data)){
+				// Stwórz dane sesyjne umożliwiające automatyczne logowanie
+				$data = array(
+					'username' => $username,
+					'user_id' => $this->membership_model->check_logged_in_user_id($username)["id_user"],
+					'is_logged_in' => true
+				);
+				$this->session->set_userdata($data);
+				// Przenieś do panelu głównego
+				redirect('zalogowany');
+			} 
+			// Jeśli aktywacja się nie udała
+			else {
+				// załaduj widok pozwalający na ponowne wysłanie linku aktywacyjnego
+				print_r($this->input->post);
+				$this->load->view("account_activation/manual_activation");
+			}
+		}
+		// jeśi użytkownik manualnie wpisał adres email aby ponownie wysłać link
+		else{
+			// załaduj model odpowiedzialny za userów
+			$this->load->model("membership_model");
+			// jeśli podany adres email I  istnieje w bazie danych
+			if($this->membership_model->check_if_email_exist($this->input->post("email")) && !$this->membership_model->check_if_username_exists($this->input->post("username"))){
+				// Przygotuj dane do wysłania maila aktywacyjnego
+				$username = $this->input->post("username");
+				$email = $this->input->post("email");
+				$key = $this->membership_model->get_activation_key($username);
+				$data = array(
+					"email" => $email,
+					"username" => $username,
+					"activation_key"=> $key 
+				);
+				// Wyślij maila aktywacyjnego
+				$this->membership_model->send_activation_email($data);
+				// Załaduj powiadomienie o wysłaniu maila
+				$data["mesg"] = "Link aktywacyjny został wysłany na podany adres email!";
+				$this->load->view("account_activation/manual_activation",$data);
+			}
+			// jeśli podany adres email nie istnieje w bazie danych
+			else{
+				// Załaduj powiadomienie o błędej walidacji
+				$data["mesg"] = "Podany email lub Login nie istnieje w bazie danych";
+				$this->load->view("account_activation/manual_activation",$data);
+			}
 		}
 	}
 }
